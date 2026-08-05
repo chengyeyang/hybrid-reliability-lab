@@ -5,9 +5,17 @@
 __pycache__/
 *.pyc
 
-# IDE
+# PyCharm
 .idea/
 
-# OS
+# macOS
 .DS_Store
+
+# Windows
 Thumbs.db
+
+# Log files
+*.log
+
+# Environment variables
+.env
