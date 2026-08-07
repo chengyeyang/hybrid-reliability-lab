@@ -46,3 +46,22 @@
 3. Create `config.py`
 4. Write initial `architecture.md`
 5. Update `roadmap.md`
+
+---
+
+# Day 3
+
+## Summary of Work
+> Put hardware, sensors, and communication aside and focus on establishing the initial framework skeleton for the 
+> project. Next step will be introducing the communication layer and beginning integrating simulated hardware components
+> to complete the framework skeleton.
+
+## Steps
+- [ ] Modify `main.py` as the application entry point
+- [ ] Create `src/controller/test_runner.py`
+- [ ] Implement the `TestRunner` class
+- [ ] Add the `run()` method
+- [ ] Connect `main.py` to `TestRunner`
+- [ ] Verify the basic execution flow
+
+

@@ -33,12 +33,43 @@
 
 ---
 
-## Milestone 3 - Communication Layer
+## Milestone 3 - Build Test Framework Skeleton 🚧
+
+**Goal:** To create an initial framework skeleton for the testing system by establishing the application's entry point 
+(`main.py`) and connect it to the test controller before implementing any actual hardware functionality.
+
+### Tasks
+- [ ] Modify `main.py` as the application entry point
+
+- [ ] Create `src/controller/test_runner.py`
+- [ ] Implement the `TestRunner` class
+- [ ] Add the `run()` method
+
+- [ ] Create `src/communication/communication.py`
+- [ ] Implement the `Communication` class
+- [ ] Add `connect()` and `disconnect()` methods
+
+- [ ] Create `src/hardware/hardware.py`
+- [ ] Implement the `Hardware` class
+- [ ] Add `move()` and `stop()` methods
+
+- [ ] Create `src/sensors/sensor.py`
+- [ ] Implement the `Sensor` class
+- [ ] Add `read()` method
+
+- [ ] Connect `Communication`, `Hardware`, and `Sensor` to `TestRunner`
+- [ ] Connect `TestRunner` to `main.py` 
+- [ ] Verify the basic execution flow
+
+---
+
+## Milestone 4 - Communication Layer 
 
 **Goal:** Build the communication interface between Python and hardware.
 
 ### Tasks
 
+- [ ] Establish the initial framework skeleton
 - [ ] Design communication abstraction
 - [ ] Implement virtual communication interface
 - [ ] Prepare Serial communication structure
@@ -46,7 +77,7 @@
 
 ---
 
-## Milestone 4 - Hardware Layer
+## Milestone 5 - Hardware Layer
 
 **Goal:** Implement hardware control modules.
 
@@ -60,7 +91,7 @@
 
 ---
 
-## Milestone 5 - Sensor Layer
+## Milestone 6 - Sensor Layer
 
 **Goal:** Implement sensor interfaces and simulation.
 
@@ -74,7 +105,7 @@
 
 ---
 
-## Milestone 6 - Test Automation Framework
+## Milestone 7 - Test Automation Framework
 
 **Goal:** Build the automated testing workflow.
 
@@ -88,7 +119,7 @@
 
 ---
 
-## Milestone 7 - Data Logging
+## Milestone 8 - Data Logging
 
 **Goal:** Record test results for later analysis.
 
@@ -102,7 +133,7 @@
 
 ---
 
-## Milestone 8 - Data Analysis
+## Milestone 9 - Data Analysis
 
 **Goal:** Analyze collected testing data.
 
@@ -115,7 +146,7 @@
 
 ---
 
-## Milestone 9 - Dashboard & Visualization
+## Milestone 10 - Dashboard & Visualization
 
 **Goal:** Visualize testing results.
 
@@ -129,7 +160,7 @@
 
 ---
 
-## Milestone 10 - Documentation & Project Polish
+## Milestone 11 - Documentation & Project Polish
 
 **Goal:** Finalize the project for portfolio presentation.
 
