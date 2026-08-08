@@ -33,37 +33,48 @@
 
 ---
 
-## Milestone 3 - Build Test Framework Skeleton 🚧
+## Milestone 3 - Build Test Framework Skeleton ✅
 
 **Goal:** To create an initial framework skeleton for the testing system by establishing the application's entry point 
-(`main.py`) and connect it to the test controller before implementing any actual hardware functionality.
+(`main.py`) and connect it to the test controller (`test_runner.py`) , which orchestrates communication, hardware, and 
+sensor modules, before implementing any actual hardware functionality.
 
 ### Tasks
-- [ ] Modify `main.py` as the application entry point
+- [x] Modify `main.py` as the application entry point
 
-- [ ] Create `src/controller/test_runner.py`
-- [ ] Implement the `TestRunner` class
-- [ ] Add the `run()` method
+- [x] Create `src/controller/test_runner.py`
+- [x] Implement the `TestRunner` class
+- [x] Add the `run()` method
 
-- [ ] Create `src/communication/communication.py`
-- [ ] Implement the `Communication` class
-- [ ] Add `connect()` and `disconnect()` methods
+- [x] Create `src/communication/communication.py`
+- [x] Implement the `Communication` class
+- [x] Add `connect()` and `disconnect()` methods
 
-- [ ] Create `src/hardware/hardware.py`
-- [ ] Implement the `Hardware` class
-- [ ] Add `move()` and `stop()` methods
+- [x] Create `src/hardware/hardware.py`
+- [x] Implement the `Hardware` class
+- [x] Add `move()` and `stop()` methods
 
-- [ ] Create `src/sensors/sensor.py`
-- [ ] Implement the `Sensor` class
-- [ ] Add `read()` method
+- [x] Create `src/sensors/sensor.py`
+- [x] Implement the `Sensor` class
+- [x] Add `read()` method
 
-- [ ] Connect `Communication`, `Hardware`, and `Sensor` to `TestRunner`
-- [ ] Connect `TestRunner` to `main.py` 
-- [ ] Verify the basic execution flow
+- [x] Connect `Communication`, `Hardware`, and `Sensor` to `TestRunner`
+- [x] Connect `TestRunner` to `main.py` 
+- [x] Verify the basic execution flow
 
 ---
 
-## Milestone 4 - Communication Layer 
+## Milestone 4 - Test Execution Framework 🚧
+
+**Goal:** Build the first layer of the test execution framework by introducing test case abstraction and separating 
+test-specific logic from the test controller.
+
+### Tasks
+- [ ] to be added
+
+---
+
+## Milestone 5 - Communication Layer 
 
 **Goal:** Build the communication interface between Python and hardware.
 
@@ -77,7 +88,7 @@
 
 ---
 
-## Milestone 5 - Hardware Layer
+## Milestone 6 - Hardware Layer
 
 **Goal:** Implement hardware control modules.
 
@@ -91,7 +102,7 @@
 
 ---
 
-## Milestone 6 - Sensor Layer
+## Milestone 7 - Sensor Layer
 
 **Goal:** Implement sensor interfaces and simulation.
 
@@ -105,7 +116,7 @@
 
 ---
 
-## Milestone 7 - Test Automation Framework
+## Milestone 8 - Test Automation Framework
 
 **Goal:** Build the automated testing workflow.
 
@@ -119,7 +130,7 @@
 
 ---
 
-## Milestone 8 - Data Logging
+## Milestone 9 - Data Logging
 
 **Goal:** Record test results for later analysis.
 
@@ -133,7 +144,7 @@
 
 ---
 
-## Milestone 9 - Data Analysis
+## Milestone 10 - Data Analysis
 
 **Goal:** Analyze collected testing data.
 
@@ -146,7 +157,7 @@
 
 ---
 
-## Milestone 10 - Dashboard & Visualization
+## Milestone 11 - Dashboard & Visualization
 
 **Goal:** Visualize testing results.
 
@@ -160,7 +171,7 @@
 
 ---
 
-## Milestone 11 - Documentation & Project Polish
+## Milestone 12 - Documentation & Project Polish
 
 **Goal:** Finalize the project for portfolio presentation.
 

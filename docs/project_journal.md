@@ -57,11 +57,35 @@
 > to complete the framework skeleton.
 
 ## Steps
-- [ ] Modify `main.py` as the application entry point
-- [ ] Create `src/controller/test_runner.py`
-- [ ] Implement the `TestRunner` class
-- [ ] Add the `run()` method
-- [ ] Connect `main.py` to `TestRunner`
-- [ ] Verify the basic execution flow
+- [x] Modify `main.py` as the application entry point
+- [x] Create `src/controller/test_runner.py`
+- [x] Implement the `TestRunner` class
+- [x] Add the `run()` method
+- [x] Connect `main.py` to `TestRunner`
+- [x] Verify the basic execution flow
 
+---
+
+# Day 4
+
+## Summary of Work
+> Continue from Day 3, complete the framework skeleton by adding the communication, hardware, and sensors modules and 
+> integrate them into `test_runner.py`. Focus still only on defining module responsibilities and establishing 
+> interactions between components without implementing actual hardware functionality.
+
+## Steps
+
+- [x] Modify `main.py` as the application entry point
+- [x] Create `src/communication/communication.py`
+- [x] Implement the `Communication` class
+- [x] Add `connect()` and `disconnect()` methods
+- [x] Create `src/hardware/hardware.py`
+- [x] Implement the `Hardware` class
+- [x] Add `move()` and `stop()` methods
+- [x] Create `src/sensors/sensor.py`
+- [x] Implement the `Sensor` class
+- [x] Add `read()` method
+- [x] Connect `Communication`, `Hardware`, and `Sensor` to `test_runner.py`
+- [x] Connect `test_runner.py` to `main.py` 
+- [x] Verify the basic execution flow
 
