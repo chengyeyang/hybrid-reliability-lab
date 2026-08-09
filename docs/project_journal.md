@@ -89,3 +89,18 @@
 - [x] Connect `test_runner.py` to `main.py` 
 - [x] Verify the basic execution flow
 
+---
+
+## Day 5
+
+## Summary of Work
+> Introduce the first layer of test execution abstraction by separating test execution logic from the TestRunner to 
+> allow TestRunner `test_runner.py` to execute different test cases without embedding test-specific logic directly into 
+> the controller.
+
+## Steps
+
+- [x] Create TestCase abstraction 
+- [x] Implement a simple test case 
+- [x] Integrate TestCase with TestRunner 
+- [x] Verify test execution flow

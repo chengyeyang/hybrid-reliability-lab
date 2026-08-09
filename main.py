@@ -1,8 +1,10 @@
 from src.controller.test_runner import TestRunner
+from src.framework.test_case import TestCase
 
 
 def main():
-    runner = TestRunner()
+    test_case = TestCase()
+    runner = TestRunner(test_case)
     runner.run()
 
 

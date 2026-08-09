@@ -70,7 +70,10 @@ sensor modules, before implementing any actual hardware functionality.
 test-specific logic from the test controller.
 
 ### Tasks
-- [ ] to be added
+- [x] Create test case abstraction `framework/test_case.py`
+- [x] Implement a simple test case
+- [x] Integrate `test_case.py` with `test_runner.py`
+- [ ] To be added
 
 ---
 
