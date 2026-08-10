@@ -64,20 +64,22 @@ sensor modules, before implementing any actual hardware functionality.
 
 ---
 
-## Milestone 4 - Test Execution Framework 🚧
+## Milestone 4 - Test Execution Framework ✅
 
 **Goal:** Build the first layer of the test execution framework by introducing test case abstraction and separating 
 test-specific logic from the test controller.
 
 ### Tasks
-- [x] Create test case abstraction `framework/test_case.py`
-- [x] Implement a simple test case
-- [x] Integrate `test_case.py` with `test_runner.py`
-- [ ] To be added
+- [x] Create and write test case abstraction `framework/test_case.py`
+- [x] Create and implement the logic for `framework/test_sequence.py` to manage the test flow
+- [x] Integrate `test_sequence.py` with `test_case.py`
+- [x] Integrate `test_runner.py` with `test_sequence.py`
+- [x] Create `framework/result.py` and integrate it with test cases
+- [x] Implement basic error handling 
 
 ---
 
-## Milestone 5 - Communication Layer 
+## Milestone 5 - Communication Layer 🚧
 
 **Goal:** Build the communication interface between Python and hardware.
 

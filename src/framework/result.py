@@ -5,6 +5,6 @@ class Result:
         self.start_time = None
         self.end_time = None
         self.duration = None
-        self.measurement = 0.0
-        self.passed = False
+        self.measurement = None
+        self.outcome = ""
         self.error = None

@@ -19,19 +19,32 @@ class TestCase1:
         result.test_name = self.__class__.__name__
         result.start_time = datetime.datetime.now()
 
-        self.communication.connect()
-        self.hardware.move()
-        value = self.sensor.read()
-        print(value)
-        self.hardware.stop()
-        self.communication.disconnect()
+        try:
+            self.communication.connect()
+            self.hardware.move()
+            result.measurement = self.sensor.read()
+            print(f"{result.measurement}")
 
-        # ----------------------
-        # do some evaluating here
-        # ----------------------
+        except Exception as e:
+            result.outcome = "ERROR"
+            result.error = str(e)
+            print(f"{self.__class__.__name__} test encountered an error: {e}")
 
-        result.end_time = datetime.datetime.now()
-        result.duration = result.end_time - result.start_time
-        result.passed = True
+        else:
+            if result.measurement < 5:
+                result.outcome = "FAIL"
+            else:
+                result.outcome = "PASS"
+
+        finally:
+            try:
+                self.hardware.stop()
+                self.communication.disconnect()
+
+            except Exception:
+                pass
+
+            result.end_time = datetime.datetime.now()
+            result.duration = result.end_time - result.start_time
 
         return result

@@ -104,3 +104,21 @@
 - [x] Implement a simple test case 
 - [x] Integrate TestCase with TestRunner 
 - [x] Verify test execution flow
+
+--- 
+
+## Day 6
+
+## Summary
+> Add a test sequence to make the test case arrangement move flexible instead of hard-coded. The main approach is to 
+> evolve the framework from `TestRunner → TestCase` to `TestRunner → TestSequence → TestCase → Result`. And also add 
+> test result and basic error handling all together to build the first version of the Test Execution Engine while 
+> keeping clear responsibilities and low coupling between the components.
+
+## Steps
+- [x] Design and implement TestSequence
+- [x] Integrate TestSequence with TestRunner 
+- [x] Define and implement Test Result 
+- [x] Collect Results in TestSequence 
+- [x] Basic Error Handling 
+- [x] Integrate Test Execution Flow
