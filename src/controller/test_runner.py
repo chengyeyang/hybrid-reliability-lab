@@ -1,7 +1,7 @@
 class TestRunner:
-    def __init__(self, case_to_execute):
-        self.testcase = case_to_execute
+    def __init__(self, test_sequence):
+        self.test_sequence = test_sequence
 
     def run(self):
         print("Starting test...")
-        self.testcase.run()
+        self.test_sequence.execute()
