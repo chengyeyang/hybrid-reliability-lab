@@ -1,0 +1,61 @@
+from src.framework.test_sequence import TestSequence as HardwareTestSequence
+from src.framework.execution_error import ExecutionError
+
+import datetime
+import pytest
+
+from src.framework.execution_error import ExecutionError
+
+
+class FakeTestCase:
+    def __init__(self, result):
+        self.result = result
+        self.was_run = False
+
+    def run(self):
+        self.was_run = True
+        return self.result
+
+
+class FailingFakeTestCase:
+    def __init__(self, result):
+        self.result = result
+
+    def run(self):
+        raise ExecutionError(
+            "FakeTestCase",
+            self.result,
+            Exception("Fake execution failure"),
+            datetime.datetime.now(),
+            "fake_stage"
+        )
+
+
+def test_sequence_collects_results_from_multiple_cases():
+    sequence = HardwareTestSequence()
+
+    case1 = FakeTestCase("result1")
+    case2 = FakeTestCase("result2")
+
+    sequence.add(case1)
+    sequence.add(case2)
+
+    sequence.execute()
+
+    assert sequence.test_results == ["result1", "result2"]
+
+
+def test_sequence_stops_when_execution_error_occurs():
+    sequence = HardwareTestSequence()
+
+    case1 = FailingFakeTestCase("error_result")
+    case2 = FakeTestCase("result2")
+
+    sequence.add(case1)
+    sequence.add(case2)
+
+    with pytest.raises(ExecutionError):
+        sequence.execute()
+
+    assert sequence.test_results == ["error_result"]
+    assert case2.was_run is False
