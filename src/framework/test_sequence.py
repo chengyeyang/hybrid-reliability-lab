@@ -1,3 +1,5 @@
+from src.framework.execution_error import ExecutionError
+
 class TestSequence:
 
     def __init__(self):
@@ -10,6 +12,12 @@ class TestSequence:
     def execute(self):
         for case in self.test_cases:
             # run case and then append its test result to test_result list
-            self.test_results.append(case.run())
+            try:
+                result = case.run()
+                self.test_results.append(result)
+
+            except ExecutionError as e:
+                self.test_results.append(e.result)
+                raise
 
         print(self.test_results)

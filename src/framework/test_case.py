@@ -1,4 +1,5 @@
 from src.framework.result import Result
+from src.framework.execution_error import ExecutionError
 
 import datetime
 
@@ -35,8 +36,8 @@ class TestCase1:
             try:
                 self.device.stop()
 
-            except Exception:
-                pass
+            except Exception as e:
+                raise ExecutionError(result.test_name, result, e, datetime.datetime.now(), "cleanup")
 
             result.end_time = datetime.datetime.now()
             result.duration = result.end_time - result.start_time
