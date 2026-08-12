@@ -4,6 +4,9 @@ import datetime
 
 class TestCase2:
 
+    def __init__(self, device):
+        self.device = device
+
     def run(self):
         # instantiate result object here so there will be result for each run instead of all runs share the same result
         result = Result()

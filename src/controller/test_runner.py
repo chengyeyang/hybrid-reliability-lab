@@ -1,7 +1,12 @@
 class TestRunner:
-    def __init__(self, test_sequence):
+    def __init__(self, test_sequence, device):
+        self.device = device
         self.test_sequence = test_sequence
 
     def run(self):
-        print("Starting test...")
-        self.test_sequence.execute()
+        self.device.connect()
+        try:
+            self.test_sequence.execute()
+        finally:
+            self.device.disconnect()
+

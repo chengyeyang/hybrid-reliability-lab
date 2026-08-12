@@ -1,6 +1,3 @@
-from src.communication.communication import Communication
-from src.hardware.hardware import Hardware
-from src.sensors.sensor import Sensor
 from src.framework.result import Result
 
 import datetime
@@ -8,10 +5,8 @@ import datetime
 
 class TestCase1:
 
-    def __init__(self):
-        self.communication = Communication()
-        self.hardware = Hardware()
-        self.sensor = Sensor()
+    def __init__(self, device):
+        self.device = device
 
     def run(self):
         # instantiate result object here so there will be result for each run instead of all runs share the same result
@@ -20,9 +15,9 @@ class TestCase1:
         result.start_time = datetime.datetime.now()
 
         try:
-            self.communication.connect()
-            self.hardware.move()
-            result.measurement = self.sensor.read()
+            self.device.move()
+            result.measurement = self.device.read()
+
             print(f"{result.measurement}")
 
         except Exception as e:
@@ -38,8 +33,7 @@ class TestCase1:
 
         finally:
             try:
-                self.hardware.stop()
-                self.communication.disconnect()
+                self.device.stop()
 
             except Exception:
                 pass
