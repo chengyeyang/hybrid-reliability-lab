@@ -9,4 +9,3 @@ class TestRunner:
             self.test_sequence.execute()
         finally:
             self.device.disconnect()
-

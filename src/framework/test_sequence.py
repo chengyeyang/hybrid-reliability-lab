@@ -1,5 +1,6 @@
 from src.framework.execution_error import ExecutionError
 
+
 class TestSequence:
 
     def __init__(self):
@@ -18,6 +19,6 @@ class TestSequence:
 
             except ExecutionError as e:
                 self.test_results.append(e.result)
-                raise
+                raise  # we want to keep the original traceback so use 'raise' instead of 'raise e'
 
         print(self.test_results)

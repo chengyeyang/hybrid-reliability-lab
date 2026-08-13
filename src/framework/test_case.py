@@ -30,7 +30,7 @@ class TestCase1:
 
             print(f"{result.measurement}")
 
-        except Exception as e:
+        except Exception as e:  # if ANY step in the 'try' section above fails will then execute this part
             result.outcome = "ERROR"
             result.error = str(e)
 
@@ -38,6 +38,7 @@ class TestCase1:
             execution_error_time = datetime.datetime.now()
 
         else:
+            # this is only a concept, to extract this evaluation section in the future
             if result.measurement < 5:
                 result.outcome = "FAIL"
             else:
@@ -52,7 +53,13 @@ class TestCase1:
                 cleanup_error = e
                 cleanup_error_time = datetime.datetime.now()
 
-        if execution_error is not None and cleanup_error is None:
+        result.end_time = datetime.datetime.now()
+        result.duration = result.end_time - result.start_time
+
+        # These 3 cases below happens only when error happens, whether it's in execution step, cleanup step, or both.
+        # All the error information collected above will then be included in executionError and return while raising
+        # error.
+        if execution_error is not None and cleanup_error is None:  # execution error only
             raise ExecutionError(
                 result.test_name,
                 result,
@@ -61,7 +68,7 @@ class TestCase1:
                 current_stage
             )
 
-        elif execution_error is None and cleanup_error is not None:
+        elif execution_error is None and cleanup_error is not None:  # cleanup stage error only
             raise ExecutionError(
                 result.test_name,
                 result,
@@ -70,7 +77,7 @@ class TestCase1:
                 "cleanup"
             )
 
-        elif execution_error is not None and cleanup_error is not None:
+        elif execution_error is not None and cleanup_error is not None:  # both execution and cleanup errors
             raise ExecutionError(
                 result.test_name,
                 result,
@@ -80,7 +87,4 @@ class TestCase1:
                 cleanup_error
                 )
 
-        result.end_time = datetime.datetime.now()
-        result.duration = result.end_time - result.start_time
-
-        return result
+        return result  # normal case, no errors at all. The result will be returned here.
