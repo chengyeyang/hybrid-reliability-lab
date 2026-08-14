@@ -1,7 +1,9 @@
-from src.framework.test_case import TestCase1 as HardwareTestCase1
+from src.framework.test_case import TestCase1 as HardwareTestCase1  # to avoid a name start with `Test` to be mistaken
+# for test by pytest
 
 import pytest
 from src.framework.execution_error import ExecutionError
+
 
 class FakeDevice:
     def __init__(self, measurement, move_should_fail=False, stop_should_fail=False):
@@ -29,6 +31,7 @@ def test_testcase_returns_pass_result():
 
     assert result.outcome == "PASS"
 
+
 def test_testcase_returns_fail_result():
     device = FakeDevice(3.0)
     test_case = HardwareTestCase1(device)
@@ -37,15 +40,20 @@ def test_testcase_returns_fail_result():
 
     assert result.outcome == "FAIL"
 
+
 def test_testcase_raises_execution_error_when_move_fails():
     device = FakeDevice(6.0, move_should_fail=True)
     test_case = HardwareTestCase1(device)
 
+    # because in this scenario, there will be no return from run() method. but we expect it will raise ExecutionError,
+    # so we utilize pytest.raise() method
     with pytest.raises(ExecutionError) as exc_info:
         test_case.run()
 
+    # `exc_info` is an exception error object from pytest, the ExecutionError we want resides in `exc_info.value`
     assert exc_info.value.stage == "move"
     assert exc_info.value.result.outcome == "ERROR"
+    # original_error is an Exception object, and apply str() will get it text string
     assert str(exc_info.value.original_error) == "Failed to move hardware"
 
 
@@ -59,6 +67,7 @@ def test_testcase_raises_execution_error_when_cleanup_fails():
     assert exc_info.value.stage == "cleanup"
     assert exc_info.value.result.outcome == "FAIL"
     assert str(exc_info.value.original_error) == "Failed to stop hardware"
+
 
 def test_testcase_preserves_cleanup_error_when_move_and_cleanup_fail():
     device = FakeDevice(

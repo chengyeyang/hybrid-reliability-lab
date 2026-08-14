@@ -1,5 +1,6 @@
-from src.framework.test_sequence import TestSequence as HardwareTestSequence
-from src.framework.execution_error import ExecutionError
+from src.framework.test_sequence import TestSequence as HardwareTestSequence  # to avoid a name start with `Test` to be
+# mistaken for test by pytest
+
 
 import datetime
 import pytest
@@ -54,6 +55,7 @@ def test_sequence_stops_when_execution_error_occurs():
     sequence.add(case1)
     sequence.add(case2)
 
+    # in this scenario, there will be ExecutionError, so we utilize pytest.raise() method to catch it
     with pytest.raises(ExecutionError):
         sequence.execute()
 

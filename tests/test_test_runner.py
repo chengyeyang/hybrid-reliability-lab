@@ -1,4 +1,5 @@
-from src.controller.test_runner import TestRunner as HardwareTestRunner
+from src.controller.test_runner import TestRunner as HardwareTestRunner  # to avoid a name start with `Test` to be
+# mistaken for test by pytest
 
 
 class FakeDevice:
