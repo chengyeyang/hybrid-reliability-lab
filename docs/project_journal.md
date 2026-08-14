@@ -122,3 +122,26 @@
 - [x] Collect Results in TestSequence 
 - [x] Basic Error Handling 
 - [x] Integrate Test Execution Flow
+
+--- 
+
+## Day 7
+
+## Summary
+> Refine the Test Execution Engine by introducing a `Device` abstraction and improving the error-handling mechanism by
+> defining clearer boundaries between test outcomes and execution-level failures. The main approach is to evolve the
+> execution flow into `TestRunner → TestSequence → TestCase → Device`, while preserving detailed failure context through
+> `Result` and `ExecutionError` before propagating the error. Add automated unit tests with `pytest` to verify the core
+> execution flow and document the updated architecture and design decisions.
+
+## Steps
+
+- [x] Introduce Device Abstraction
+- [x] Refactor TestCase to Use Device Dependency Injection
+- [x] Define Execution Session Lifecycle in TestRunner
+- [x] Refine Test-Level and Execution-Level Error Boundaries
+- [x] Handle Execution and Cleanup Failures
+- [x] Preserve Primary and Cleanup Error Context
+- [x] Add Unit Tests for TestCase, TestSequence, and TestRunner
+- [x] Update Architecture Documentation
+- [x] Update Design Decisions
