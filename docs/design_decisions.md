@@ -55,3 +55,31 @@ Reason:
 
 An execution-level failure may leave the system in an invalid or unknown state. Continuing to execute the remaining test 
 cases could therefore produce unreliable results. The test sequence stops and propagates the failure instead.
+
+---
+
+## 2026-08-15
+
+### Decision 8: Separate the Device Contract from the Real Device Implementation
+
+Reason:
+
+The original Device abstraction also contained dependencies on Communication, Hardware, and Sensor, which tied the 
+abstraction to the real hardware implementation. Separating Device from RealDevice allows Device to define only the 
+common contract, while RealDevice implements that contract using the real hardware components.
+
+### Decision 9: Use an Abstract Base Class to Define the Device Contract
+
+Reason:
+
+An abstract base class explicitly defines the operations required by the framework and prevents incomplete concrete 
+device implementations from being instantiated. Each concrete device implementation must provide connect(), move(), 
+read(), stop(), and disconnect().
+
+### Decision 10: Keep the Device Contract Limited to Current Requirements
+
+Reason:
+
+The framework cannot predict the capabilities required by every future hardware device. The initial Device contract 
+therefore defines only the operations required by the current project instead of attempting to create a universal 
+hardware interface. The contract can evolve when new requirements are introduced.

@@ -1,20 +1,24 @@
-class Device:
-    def __init__(self, communication, hardware, sensor):
-        self.communication = communication
-        self.hardware = hardware
-        self.sensor = sensor
+from abc import ABC, abstractmethod
 
+
+class Device(ABC):
+
+    @abstractmethod
     def connect(self):
-        self.communication.connect()
+        pass
 
+    @abstractmethod
     def move(self):
-        self.hardware.move()
+        pass
 
+    @abstractmethod
     def read(self):
-        return self.sensor.read()
+        pass
 
+    @abstractmethod
     def stop(self):
-        self.hardware.stop()
+        pass
 
+    @abstractmethod
     def disconnect(self):
-        self.communication.disconnect()
+        pass

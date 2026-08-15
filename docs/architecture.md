@@ -44,10 +44,14 @@ The system simulates an automated testing laboratory capable of:
 4. Performs case-level cleanup after test execution
 5. Raises `ExecutionError` when an execution-level failure requires the test sequence to stop
 
-**Device**: Provides a unified abstraction over `Communication`, `Hardware`, and `Sensor`
-1. Exposes a common interface for test cases to interact with the device
-2. Delegates operations to the appropriate underlying component
-3. Hides lower-level component dependencies from the test framework
+**Device**: Defines the abstract contract that all device implementations must follow
+1. Defines the minimum set of operations required by the test framework
+2. Enforces that concrete device implementations provide the required methods
+
+**RealDevice**: Implements the Device contract using the real hardware components
+1. Receives Communication, Hardware, and Sensor dependencies during initialization
+2. Implements the operations defined by the Device abstraction
+3. Delegates device operations to the appropriate underlying component
 
 **Result**: Stores the outcome and execution information of an individual test
 1. Stores the test outcome (`PASS`, `FAIL`, or `ERROR`)
@@ -66,23 +70,21 @@ The following diagram shows the direct interactions between the core components 
 
 ```mermaid
 flowchart TD
-    MAIN[main.py]
     TR[TestRunner]
     TS[TestSequence]
     TC[TestCase]
-    DEV[Device]
+    REAL[RealDevice]
     COM[Communication]
     HW[Hardware]
     SEN[Sensor]
 
-    MAIN --> TR
     TR --> TS
-    TR --> DEV
+    TR --> REAL
     TS --> TC
-    TC --> DEV
-    DEV --> COM
-    DEV --> HW
-    DEV --> SEN
+    TC --> REAL
+    REAL --> COM
+    REAL --> HW
+    REAL --> SEN
 ```
 
 ## Error Handling Flow
@@ -95,4 +97,3 @@ flowchart TD
     TC -. execution / cleanup failure .-> TS
     TS -. stops sequence and propagates failure .-> TR
 ```
-

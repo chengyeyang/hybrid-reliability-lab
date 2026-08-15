@@ -145,3 +145,25 @@
 - [x] Add Unit Tests for TestCase, TestSequence, and TestRunner
 - [x] Update Architecture Documentation
 - [x] Update Design Decisions
+
+---
+
+## Day 8
+
+## Summary
+> Finalize the Device abstraction by separating the device contract from the real hardware implementation. Define Device 
+> as an abstract base class (ABC) and introduce RealDevice as its concrete implementation using Communication, Hardware, 
+> and Sensor. Verify that the test framework remains independent of the concrete device implementation while preserving 
+> the existing execution behavior. Define the initial VirtualDevice state and behavior requirements in preparation for 
+> its implementation.
+
+## Steps
+- [x] Review Device responsibilities and abstraction boundary 
+- [x] Define the Device contract 
+- [x] Introduce Device as an ABC (Abstract Base Class) 
+- [x] Separate RealDevice from the Device abstraction 
+- [x] Refactor Main to Use RealDevice 
+- [x] Verify TestCase independence from concrete Device implementations 
+- [x] Review unit Tests for the Device boundary 
+- [x] Define initial VirtualDevice state and behavior requirements 
+- [x] Run regression tests
