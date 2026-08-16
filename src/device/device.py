@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 
 
+class DeviceError(Exception):
+    pass
+
+
 class Device(ABC):
 
     @abstractmethod
