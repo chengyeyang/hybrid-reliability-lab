@@ -83,3 +83,25 @@ Reason:
 The framework cannot predict the capabilities required by every future hardware device. The initial Device contract 
 therefore defines only the operations required by the current project instead of attempting to create a universal 
 hardware interface. The contract can evolve when new requirements are introduced.
+
+--- 
+
+## 2026-08-17
+
+### Decision 11: VirtualDevice Implements the Existing Device Contract
+
+Reason:
+
+VirtualDevice should be interchangeable with RealDevice from the test framework's perspective. Reusing the existing
+Device contract allows TestRunner, TestSequence, and TestCase to work with VirtualDevice without introducing
+virtual-specific execution logic. This keeps the framework independent from concrete device implementations and
+allows virtual tests to run without Communication, Hardware, or Sensor dependencies.
+
+### Decision 12: Use DeviceError for Device-Level Operation Failures
+
+Reason:
+
+Invalid device operations should be represented at the Device abstraction layer instead of coupling concrete device
+implementations to the framework-level ExecutionError. Both RealDevice and VirtualDevice may encounter device-level
+operation failures, so DeviceError provides a shared abstraction for these failures. More specific device error types
+can be introduced later if different handling behavior becomes necessary.
