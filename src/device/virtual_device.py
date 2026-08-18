@@ -5,9 +5,12 @@ class VirtualDevice(Device):
     def __init__(self):
         self.is_connected = False
         self.is_moving = False
-        self.measurement = 0
+        self.measurement = 25
+        self.connection_failure_enabled = False
 
     def connect(self):
+        if self.connection_failure_enabled:
+            raise DeviceError("Fail to connect")
         self.is_connected = True
 
     def move(self):
@@ -32,3 +35,17 @@ class VirtualDevice(Device):
 
     def disconnect(self):
         self.is_connected = False
+
+    def set_measurement(self, temp_level):
+        condition = temp_level.lower()
+        if condition == "hot":
+            self.measurement = 35
+        elif condition == "medium":
+            self.measurement = 25
+        elif condition == "cold":
+            self.measurement = 0
+        else:
+            raise DeviceError("Wrong temperature level")
+
+    def set_connection_failure(self, enabled):
+        self.connection_failure_enabled = enabled
