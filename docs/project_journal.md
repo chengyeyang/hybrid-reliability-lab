@@ -193,3 +193,30 @@
 - [x] Verify deterministic measurement and test outcome
 - [x] Verify repeated virtual executions produce consistent results with independent Result instances
 - [x] Run regression tests — 24 tests passed
+
+---
+
+## Day 10
+
+## Summary
+> Enhance VirtualDevice with configurable simulated measurement behavior and a controllable connection failure scenario.
+> Separate simulated measurement from movement state so sensor behavior can be configured independently from device
+> movement. Add VirtualDevice-specific simulation controls without expanding the Device contract, and preserve
+> deterministic behavior by explicitly controlling measurement conditions and connection failure state. Extend unit
+> tests to verify measurement configuration, invalid input behavior, persistent connection failure, and failure recovery.
+> Update existing tests for the intentional default measurement change and verify the complete framework through
+> regression testing.
+
+## Steps
+- [x] Review and refine the VirtualDevice state model
+- [x] Separate simulated measurement from movement state
+- [x] Add configurable measurement conditions for cold, medium, and hot scenarios
+- [x] Add case-insensitive measurement configuration
+- [x] Preserve measurement state when an invalid condition raises DeviceError
+- [x] Add controllable connection failure simulation
+- [x] Keep simulation-specific controls outside the Device contract
+- [x] Implement persistent connection failure behavior
+- [x] Verify connection recovery after disabling the simulated failure
+- [x] Update existing tests for the intentional default measurement behavior change
+- [x] Add unit tests for measurement and connection failure behavior
+- [x] Run full regression tests — 32 tests passed

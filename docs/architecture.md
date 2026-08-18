@@ -56,8 +56,9 @@ The system simulates an automated testing laboratory capable of:
 **VirtualDevice**: Implements the Device contract using simulated device state and behavior
 1. Maintains simulated connection, movement, and measurement state
 2. Implements the same operations defined by the Device abstraction
-3. Provides deterministic behavior for hardware-independent and repeatable test execution
-4. Raises `DeviceError` when an operation is invalid for the current device state
+3. Provides VirtualDevice-specific controls for configuring deterministic measurement and failure scenarios 
+4. Keeps simulation-specific controls outside the Device contract
+5. Raises `DeviceError` for invalid device operations and simulated device failures
 
 **Result**: Stores the outcome and execution information of an individual test
 1. Stores the test outcome (`PASS`, `FAIL`, or `ERROR`)
@@ -70,9 +71,9 @@ The system simulates an automated testing laboratory capable of:
 3. Preserves a secondary cleanup error when both execution and cleanup fail. 
 4. Propagates the failure upward so the remaining test sequence can be stopped.
 
-**DeviceError**: Represents a failure caused by an invalid device operation
+**DeviceError**: Raises DeviceError for invalid device operations and simulated device failures
 1. Belongs to the Device abstraction layer
-2. Can be raised by concrete device implementations when a requested operation cannot be performed
+2. Can be raised by concrete device implementations when an operation is invalid or cannot be completed
 3. Keeps device-level failures independent from framework-level `ExecutionError`
 
 ## Core Execution Flow

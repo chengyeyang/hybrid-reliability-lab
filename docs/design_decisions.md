@@ -105,3 +105,25 @@ Invalid device operations should be represented at the Device abstraction layer 
 implementations to the framework-level ExecutionError. Both RealDevice and VirtualDevice may encounter device-level
 operation failures, so DeviceError provides a shared abstraction for these failures. More specific device error types
 can be introduced later if different handling behavior becomes necessary.
+
+---
+
+## 2026-08-18
+
+### Decision 13: Separate Simulated Measurement from Movement State
+
+Reason:
+
+VirtualDevice measurement should represent the simulated sensor or environmental condition rather than the device's
+movement state. Moving or stopping the device should therefore not directly change the measurement. This keeps
+different device states independent and allows test scenarios to control simulated measurements explicitly through
+VirtualDevice without coupling sensor behavior to movement behavior.
+
+### Decision 13: Keep Simulation Controls Outside the Device Contract
+
+Reason:
+
+Simulation controls such as `set_measurement()` and `set_connection_failure()` are specific to VirtualDevice and are
+not operations that every Device implementation should provide. Keeping these controls outside the Device contract
+allows tests to configure deterministic virtual scenarios without requiring RealDevice or the test framework to
+implement or depend on simulation-specific behavior.
