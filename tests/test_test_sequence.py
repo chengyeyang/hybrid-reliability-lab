@@ -41,9 +41,9 @@ def test_sequence_collects_results_from_multiple_cases():
     sequence.add(case1)
     sequence.add(case2)
 
-    sequence.execute()
+    results = sequence.execute()
 
-    assert sequence.test_results == ["result1", "result2"]
+    assert results == ["result1", "result2"]
 
 
 def test_sequence_stops_when_execution_error_occurs():
@@ -56,8 +56,8 @@ def test_sequence_stops_when_execution_error_occurs():
     sequence.add(case2)
 
     # in this scenario, there will be ExecutionError, so we utilize pytest.raise() method to catch it
-    with pytest.raises(ExecutionError):
+    with pytest.raises(ExecutionError) as exc_info:
         sequence.execute()
 
-    assert sequence.test_results == ["error_result"]
+    assert exc_info.value.result == "error_result"
     assert case2.was_run is False

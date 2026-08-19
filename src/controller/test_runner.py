@@ -6,6 +6,8 @@ class TestRunner:
     def run(self):
         self.device.connect()
         try:
-            self.test_sequence.execute()
+            results = self.test_sequence.execute()
         finally:
             self.device.disconnect()
+
+        return results
