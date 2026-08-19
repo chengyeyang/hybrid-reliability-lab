@@ -28,17 +28,18 @@ The system simulates an automated testing laboratory capable of:
 ## Core Responsibilities  
 
 **TestRunner**: Manages the overall test execution lifecycle.
-1. Connect to device before test execution
+1. Connects to device before test execution
 2. Starts test sequence
-3. Ensure the device is disconnect after execution
+3. Ensures the device is disconnect after execution
+4. Returns the collected execution results to the caller
 
 **TestSequence**: Defines and executes the test sequence  
-1. Run the individual tests in order
-2. Collects and stores test results
-3. Stops the remaining sequence and propagates `ExecutionError` when an execution-level failure occurs
+1. Runs the individual tests in order
+2. Collects and returns test results for the current execution
+3. Stops the remaining sequence when an execution-level failure propagates from a test case
 
 **TestCase**: Defines and executes the logic of an individual test
-1. Defines and perform the steps of an individual test
+1. Defines and performs the steps of an individual test
 2. Collects measurements and determines the test outcome (`PASS`, `FAIL`, or `ERROR`)
 3. Stores the test outcome and execution information in a `Result` 
 4. Performs case-level cleanup after test execution
@@ -107,6 +108,10 @@ flowchart TD
     REAL --> HW
     REAL --> SEN
 ```
+
+Each TestCase produces a Result for its execution. TestSequence collects the Results produced during the current
+execution and returns them through TestRunner to the caller. Execution results are scoped to a single run and are not
+stored as persistent state in TestSequence.
 
 ## Error Handling Flow
 ```mermaid

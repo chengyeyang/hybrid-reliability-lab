@@ -220,3 +220,33 @@
 - [x] Update existing tests for the intentional default measurement behavior change
 - [x] Add unit tests for measurement and connection failure behavior
 - [x] Run full regression tests — 32 tests passed
+
+--- 
+
+## Day 11
+
+## Summary
+> Integrate VirtualDevice with the complete test execution flow and verify end-to-end behavior through TestRunner,
+> TestSequence, and TestCase. Refine result ownership by returning execution results through the execution hierarchy
+> instead of storing them as persistent TestSequence state, keeping results scoped to each execution. Preserve the
+> framework abstraction boundary by configuring VirtualDevice-specific scenarios outside the test framework. Extend
+> integration tests to verify PASS and FAIL scenarios, multiple TestCase execution, independent Result instances,
+> deterministic repeated execution, and device cleanup. Update existing tests for the new result-return contract and
+> verify the complete framework through regression testing.
+
+## Steps
+- [x] Review the framework-to-VirtualDevice integration flow
+- [x] Keep VirtualDevice scenario configuration outside the test framework
+- [x] Return collected results from TestSequence to its caller
+- [x] Propagate execution results through TestRunner
+- [x] Remove persistent execution-result state from TestSequence
+- [x] Simplify redundant ExecutionError handling in TestSequence
+- [x] Update existing tests for the new result-return contract
+- [x] Verify end-to-end PASS behavior with VirtualDevice
+- [x] Verify end-to-end FAIL behavior with VirtualDevice
+- [x] Verify multiple TestCase instances execute in a single TestSequence
+- [x] Verify independent Result instances across test executions
+- [x] Verify deterministic behavior across repeated VirtualDevice executions
+- [x] Verify device cleanup after framework execution
+- [x] Update architecture and design decision documentation
+- [x] Run full regression tests — 34 tests passed

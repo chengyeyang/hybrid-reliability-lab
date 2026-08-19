@@ -119,7 +119,7 @@ movement state. Moving or stopping the device should therefore not directly chan
 different device states independent and allows test scenarios to control simulated measurements explicitly through
 VirtualDevice without coupling sensor behavior to movement behavior.
 
-### Decision 13: Keep Simulation Controls Outside the Device Contract
+### Decision 14: Keep Simulation Controls Outside the Device Contract
 
 Reason:
 
@@ -127,3 +127,27 @@ Simulation controls such as `set_measurement()` and `set_connection_failure()` a
 not operations that every Device implementation should provide. Keeping these controls outside the Device contract
 allows tests to configure deterministic virtual scenarios without requiring RealDevice or the test framework to
 implement or depend on simulation-specific behavior.
+
+---
+
+## 2026-08-19
+
+### Decision 15: Return Execution Results Through the Execution Hierarchy
+
+Reason:
+
+Execution results should be returned through the same hierarchy that manages test execution rather than stored as
+persistent state in TestSequence. TestCase returns an individual Result, TestSequence collects and returns the Results
+from the current execution, and TestRunner returns them to its caller. This keeps execution results scoped to a single
+run, avoids accumulating results across repeated executions, and allows callers to obtain results without depending on
+TestSequence's internal state.
+
+### Decision 16: Configure VirtualDevice Scenarios Outside the Test Framework
+
+Reason:
+
+VirtualDevice scenarios should be configured before framework execution by setup or composition code rather than by
+TestRunner, TestSequence, or TestCase. This prevents the test framework from depending on VirtualDevice-specific
+controls such as `set_measurement()` and keeps framework components dependent only on the Device contract. As a result,
+different simulated scenarios can be configured without introducing simulation-specific behavior into the execution
+framework.
