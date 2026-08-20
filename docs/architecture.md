@@ -66,6 +66,11 @@ The system simulates an automated testing laboratory capable of:
 2. Stores measurement, timing information, and name of the test 
 3. Preserves test-level error information when test execution fails
 
+**Logger**: Records completed test result data outside the test execution framework
+1. Receives completed test results after framework execution
+2. Records test outcome, measurement, timing, test name, and error information
+3. Keeps logging responsibilities separate from TestRunner, TestSequence, and TestCase
+
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
 2. Carries the associated result, failure stage, and timestamp. 
@@ -79,7 +84,8 @@ The system simulates an automated testing laboratory capable of:
 
 ## Core Execution Flow
 
-The following diagram shows the direct interactions between the core components during test execution. 
+The following diagram shows the direct interactions and result flow between the core components during and after test 
+execution.
 
 Solid arrows represent direct runtime interaction between components.
 Dashed arrows represent implementation of an abstraction contract.
@@ -89,6 +95,9 @@ flowchart TD
     TR[TestRunner]
     TS[TestSequence]
     TC[TestCase]
+    RES[Result]
+    CALLER[Caller]
+    LOG[Logger]
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
@@ -101,6 +110,12 @@ flowchart TD
     TS --> TC
     TC --> DEV
 
+    TC --> RES
+    RES --> TS
+    TS --> TR
+    TR --> CALLER
+    CALLER --> LOG
+
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
 
@@ -111,7 +126,8 @@ flowchart TD
 
 Each TestCase produces a Result for its execution. TestSequence collects the Results produced during the current
 execution and returns them through TestRunner to the caller. Execution results are scoped to a single run and are not
-stored as persistent state in TestSequence.
+stored as persistent state in TestSequence. The caller can pass completed Results to the Logger after execution, keeping result logging outside the test execution
+framework.
 
 ## Error Handling Flow
 ```mermaid

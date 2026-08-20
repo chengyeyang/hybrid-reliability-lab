@@ -250,3 +250,31 @@
 - [x] Verify device cleanup after framework execution
 - [x] Update architecture and design decision documentation
 - [x] Run full regression tests — 34 tests passed
+
+---
+
+## Day 12
+
+## Summary
+> Introduce an initial Logger abstraction for recording completed test result data outside the test execution framework.
+> Keep logging responsibilities separate from TestRunner, TestSequence, and TestCase by consuming Results returned to the
+> caller after execution. Store independent in-memory snapshots of Result data to preserve test outcome, measurement,
+> timing, test name, and error information without depending on a persistent output format. Add unit tests to verify
+> complete result logging, multiple-result accumulation, independent result snapshots, and error-result preservation.
+> Review the execution-to-logging boundary and verify the complete framework through regression testing.
+
+## Steps
+- [x] Review the existing Result structure and execution result flow
+- [x] Define the responsibility and boundary of the logging layer
+- [x] Keep Logger outside the test execution framework
+- [x] Define Logger to record completed Results individually
+- [x] Implement in-memory storage for logged result data
+- [x] Preserve test name, measurement, outcome, timing, and error information
+- [x] Store logged data as an independent snapshot of the original Result
+- [x] Verify complete Result data is recorded correctly
+- [x] Verify multiple Results accumulate as separate records in insertion order
+- [x] Verify logged records remain unchanged when the original Result is modified
+- [x] Verify ERROR outcome and error information are preserved
+- [x] Review whether execution-to-Logger integration testing adds new coverage
+- [x] Keep execution and Logger behavior independently tested without redundant integration coverage
+- [x] Run full regression tests — 38 tests passed

@@ -151,3 +151,17 @@ TestRunner, TestSequence, or TestCase. This prevents the test framework from dep
 controls such as `set_measurement()` and keeps framework components dependent only on the Device contract. As a result,
 different simulated scenarios can be configured without introducing simulation-specific behavior into the execution
 framework.
+
+--- 
+
+## 2026-08-20
+
+### Decision 17: Keep Logging Outside the Test Execution Framework
+
+Reason:
+
+Test results should be logged outside the test execution framework using the results returned by TestRunner rather than
+by TestRunner, TestSequence, or TestCase. This keeps logging responsibilities separate from test execution and prevents
+framework components from depending on logging-specific behavior. As a result, completed test results can be consumed by
+the Logger or future data-processing components without expanding the responsibilities of the execution framework.
+
