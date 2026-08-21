@@ -1,6 +1,7 @@
 from src.framework.result import Result
 from src.logger.logger import Logger
 import datetime
+from src.data.test_record import TestRecord as OneTestRecord
 
 
 def test_logger_records_result_data():
@@ -16,16 +17,18 @@ def test_logger_records_result_data():
     logger = Logger()
     logger.log(result)
 
+    assert len(logger.records) == 1  # if this case fails, there's no need to run the rest
+
     record = logger.records[0]
 
-    assert len(logger.records) == 1  # if this case fails, there's no need to run the rest
-    assert record["test_name"] == "test name"
-    assert record["start_time"] == datetime.datetime(2026, 6, 7, 14, 30, 0)
-    assert record["end_time"] == datetime.datetime(2026, 6, 7, 14, 35, 30)
-    assert record["duration"] == datetime.timedelta(minutes=5, seconds=30)
-    assert record["measurement"] == 25
-    assert record["outcome"] == "PASS"
-    assert record["error"] is None
+    assert record.test_name == "test name"
+    assert record.start_time == datetime.datetime(2026, 6, 7, 14, 30, 0)
+    assert record.end_time == datetime.datetime(2026, 6, 7, 14, 35, 30)
+    assert record.duration == datetime.timedelta(minutes=5, seconds=30)
+    assert record.measurement == 25
+    assert record.outcome == "PASS"
+    assert record.error is None
+    assert isinstance(record, OneTestRecord)
 
 
 def test_logger_stores_result_snapshot():
@@ -37,7 +40,7 @@ def test_logger_stores_result_snapshot():
 
     result.error = "add an error now"
 
-    assert logger.records[0]["error"] is None
+    assert logger.records[0].error is None
 
 
 def test_logger_records_multiple_results():
@@ -65,13 +68,13 @@ def test_logger_records_multiple_results():
 
     assert len(logger.records) == 2
 
-    assert logger.records[0]["test_name"] == "test name 1"
-    assert logger.records[0]["measurement"] == 25
-    assert logger.records[0]["outcome"] == "PASS"
+    assert logger.records[0].test_name == "test name 1"
+    assert logger.records[0].measurement == 25
+    assert logger.records[0].outcome == "PASS"
 
-    assert logger.records[1]["test_name"] == "test name 2"
-    assert logger.records[1]["measurement"] == 0
-    assert logger.records[1]["outcome"] == "FAIL"
+    assert logger.records[1].test_name == "test name 2"
+    assert logger.records[1].measurement == 0
+    assert logger.records[1].outcome == "FAIL"
 
 
 def test_logger_result_with_error():
@@ -82,7 +85,7 @@ def test_logger_result_with_error():
     logger = Logger()
     logger.log(result)
 
-    assert logger.records[0]["outcome"] == "ERROR"
-    assert logger.records[0]["error"] == "This is an error for unit test"
+    assert logger.records[0].outcome == "ERROR"
+    assert logger.records[0].error == "This is an error for unit test"
 
 
