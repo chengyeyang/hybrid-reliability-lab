@@ -6,6 +6,7 @@ class Logger:
     def __init__(self):
         self.records = []
 
+    # pass in result and transfer it to TestRecord format
     def log(self, result):
         record = TestRecord(
             test_name=result.test_name,

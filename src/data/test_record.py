@@ -3,7 +3,7 @@ import uuid
 import datetime
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True)  # this decoration means once a TestRecord instance is created, it can not be changed again.
 class TestRecord:
     # when apply @dataclass, Python itself will take care of __init__(), so no need to add one
 

@@ -26,6 +26,7 @@ def test_test_record_preserves_test_data():
     assert record.measurement == 15
     assert record.outcome == "PASS"
     assert record.error is None
+    assert record.test_id is not None
 
 
 def test_test_record_generates_unique_id():
