@@ -21,6 +21,7 @@ The system simulates an automated testing laboratory capable of:
 - Hardware
 - Sensors
 - Communication
+- Data
 - Logger
 - Analysis
 - Dashboard
@@ -66,10 +67,17 @@ The system simulates an automated testing laboratory capable of:
 2. Stores measurement, timing information, and name of the test 
 3. Preserves test-level error information when test execution fails
 
+**TestRecord**: Represents the completed data of an individual test execution
+1. Stores test name, measurement, timing, outcome, and error information
+2. Assigns a unique identifier to each recorded test execution
+3. Preserves completed test data as an immutable record
+4. Provides a data-layer representation independent from the execution-layer `Result`
+
 **Logger**: Records completed test result data outside the test execution framework
-1. Receives completed test results after framework execution
-2. Records test outcome, measurement, timing, test name, and error information
-3. Keeps logging responsibilities separate from TestRunner, TestSequence, and TestCase
+1. Receives completed `Result` objects after framework execution
+2. Converts each completed `Result` into an independent `TestRecord`
+3. Collects recorded test executions for downstream data processing
+4. Keeps logging responsibilities separate from TestRunner, TestSequence, and TestCase
 
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
@@ -98,6 +106,7 @@ flowchart TD
     RES[Result]
     CALLER[Caller]
     LOG[Logger]
+    TREC[TestRecord]
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
@@ -115,6 +124,7 @@ flowchart TD
     TS --> TR
     TR --> CALLER
     CALLER --> LOG
+    LOG --> TREC
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
@@ -126,8 +136,9 @@ flowchart TD
 
 Each TestCase produces a Result for its execution. TestSequence collects the Results produced during the current
 execution and returns them through TestRunner to the caller. Execution results are scoped to a single run and are not
-stored as persistent state in TestSequence. The caller can pass completed Results to the Logger after execution, keeping result logging outside the test execution
-framework.
+stored as persistent state in TestSequence. The caller can pass completed Results to the Logger after execution, keeping
+result logging outside the test execution framework. The Logger converts each completed Result into an immutable
+TestRecord with its own record identity, providing a data-layer representation for downstream data processing.
 
 ## Error Handling Flow
 ```mermaid

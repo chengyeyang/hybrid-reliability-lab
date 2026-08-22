@@ -165,3 +165,36 @@ by TestRunner, TestSequence, or TestCase. This keeps logging responsibilities se
 framework components from depending on logging-specific behavior. As a result, completed test results can be consumed by
 the Logger or future data-processing components without expanding the responsibilities of the execution framework.
 
+---
+
+## 2026-08-22
+
+### Decision 18: Represent Completed Test Data with Immutable TestRecord Objects
+
+Reason:
+
+Completed test execution data should be represented by immutable TestRecord objects rather than by mutable execution-time
+Result objects. Result remains responsible for carrying test outcome data through the execution flow, while TestRecord
+represents the completed state of one test execution after that data crosses into the data layer. Keeping TestRecord
+immutable preserves the recorded execution state and prevents downstream processing from modifying historical test data.
+
+
+### Decision 19: Keep TestRecord in an Independent Data Layer
+
+Reason:
+
+TestRecord should belong to an independent data layer rather than the test execution framework or Logger implementation.
+This keeps the standardized test record representation separate from both execution behavior and logging behavior. As a
+result, future components such as CSV export, reporting, analysis, and visualization can consume TestRecord objects without
+depending on TestCase, TestSequence, TestRunner, or Logger-specific implementation details.
+
+
+### Decision 20: Keep TestRecord Independent from Result
+
+Reason:
+
+TestRecord should receive completed test data values rather than depend directly on the Result type. Conversion from Result
+to TestRecord is performed at the logging and data boundary, allowing Result to remain an execution-layer representation
+while TestRecord remains a data-layer representation. This reduces coupling between the execution and data layers and
+allows TestRecord to be created or consumed independently from the test execution framework.
+
