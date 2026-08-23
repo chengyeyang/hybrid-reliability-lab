@@ -283,8 +283,6 @@
 
 ## Day 13
 
-## Day 13
-
 ## Summary
 > Introduce a TestRecord data model to represent completed test execution data independently from the execution framework.
 > Separate mutable execution-time Result objects from immutable data-layer TestRecord objects, and keep TestRecord in an
