@@ -23,6 +23,7 @@ The system simulates an automated testing laboratory capable of:
 - Communication
 - Data
 - Logger
+- Export
 - Analysis
 - Dashboard
 
@@ -79,6 +80,14 @@ The system simulates an automated testing laboratory capable of:
 3. Collects recorded test executions for downstream data processing
 4. Keeps logging responsibilities separate from TestRunner, TestSequence, and TestCase
 
+**CSVExporter**: Persists completed test records in CSV format
+1. Receives completed `TestRecord` objects for export
+2. Serializes record fields into a stable CSV representation
+3. Appends new records without replacing previously exported test data
+4. Writes the CSV header only when the target file does not exist or is empty
+5. Preserves the input record order during export
+6. Performs no file operation when no records are provided
+
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
 2. Carries the associated result, failure stage, and timestamp. 
@@ -90,12 +99,12 @@ The system simulates an automated testing laboratory capable of:
 2. Can be raised by concrete device implementations when an operation is invalid or cannot be completed
 3. Keeps device-level failures independent from framework-level `ExecutionError`
 
-## Core Execution Flow
+## Core Execution and Data Flow
 
-The following diagram shows the direct interactions and result flow between the core components during and after test 
+The following diagram shows the direct interactions and data flow between the core components during and after test
 execution.
 
-Solid arrows represent direct runtime interaction between components.
+Solid arrows represent direct runtime interaction or data flow between components.
 Dashed arrows represent implementation of an abstraction contract.
 
 ```mermaid
@@ -107,6 +116,8 @@ flowchart TD
     CALLER[Caller]
     LOG[Logger]
     TREC[TestRecord]
+    EXP[CSVExporter]
+    CSV[(CSV File)]
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
@@ -125,6 +136,8 @@ flowchart TD
     TR --> CALLER
     CALLER --> LOG
     LOG --> TREC
+    TREC --> EXP
+    EXP --> CSV
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
@@ -139,6 +152,8 @@ execution and returns them through TestRunner to the caller. Execution results a
 stored as persistent state in TestSequence. The caller can pass completed Results to the Logger after execution, keeping
 result logging outside the test execution framework. The Logger converts each completed Result into an immutable
 TestRecord with its own record identity, providing a data-layer representation for downstream data processing.
+CSVExporter can persist completed TestRecord data into CSV format while preserving existing test history, record order,
+and a stable serialization format for future analysis and reporting.
 
 ## Error Handling Flow
 ```mermaid

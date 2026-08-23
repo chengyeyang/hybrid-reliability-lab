@@ -178,7 +178,6 @@ Result objects. Result remains responsible for carrying test outcome data throug
 represents the completed state of one test execution after that data crosses into the data layer. Keeping TestRecord
 immutable preserves the recorded execution state and prevents downstream processing from modifying historical test data.
 
-
 ### Decision 19: Keep TestRecord in an Independent Data Layer
 
 Reason:
@@ -188,7 +187,6 @@ This keeps the standardized test record representation separate from both execut
 result, future components such as CSV export, reporting, analysis, and visualization can consume TestRecord objects without
 depending on TestCase, TestSequence, TestRunner, or Logger-specific implementation details.
 
-
 ### Decision 20: Keep TestRecord Independent from Result
 
 Reason:
@@ -197,4 +195,37 @@ TestRecord should receive completed test data values rather than depend directly
 to TestRecord is performed at the logging and data boundary, allowing Result to remain an execution-layer representation
 while TestRecord remains a data-layer representation. This reduces coupling between the execution and data layers and
 allows TestRecord to be created or consumed independently from the test execution framework.
+
+---
+
+## 2026-08-23
+
+### Decision 21: Keep CSV Export Separate from Logger
+
+Reason:
+
+CSV persistence is handled by a dedicated CSVExporter rather than being implemented directly in Logger. Logger remains
+responsible for converting completed Result objects into TestRecord objects and collecting them, while CSVExporter is
+responsible for serializing completed TestRecord data into CSV format. This keeps data collection separate from a
+specific persistence format and allows TestRecord data to be consumed by future reporting, analysis, or visualization
+components without depending on CSV output.
+
+### Decision 22: Define an Explicit CSV Serialization Contract
+
+Reason:
+
+CSVExporter serializes TestRecord fields into a stable tabular representation rather than relying on implicit Python
+string conversion. Test identifiers are stored as UUID strings, timestamps use ISO 8601 format, durations are stored as
+total seconds, measurements preserve their numeric representation, and missing error values are stored as empty fields.
+This keeps exported data human-readable while providing predictable values that can be converted back into appropriate
+Python types for future analysis and reporting.
+
+### Decision 23: Preserve CSV History Through Append-Only Export
+
+Reason:
+
+CSVExporter appends new TestRecord data to an existing CSV file rather than replacing previously exported records.
+A header is written only when the target file does not exist or exists but is empty, preventing duplicate headers while
+preserving accumulated test history. Exporting an empty record collection performs no file operation. Records are written
+in the order provided by the caller so exported data preserves the ordering of the source collection.
 
