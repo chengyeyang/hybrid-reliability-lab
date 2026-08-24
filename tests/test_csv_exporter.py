@@ -1,4 +1,4 @@
-from src.data.test_record import TestRecord as TheTestRecord
+from src.data.test_record import OneTestRecord as TheTestRecord
 import datetime
 from src.export.csv_exporter import CSVExporter
 import csv

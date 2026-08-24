@@ -1,5 +1,5 @@
 import datetime
-from src.data.test_record import TestRecord as OneTestRecord
+from src.data.test_record import OneTestRecord as OneTestRecord
 import pytest
 from dataclasses import FrozenInstanceError
 

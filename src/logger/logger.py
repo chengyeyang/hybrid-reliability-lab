@@ -1,4 +1,4 @@
-from src.data.test_record import TestRecord
+from src.data.test_record import OneTestRecord
 
 
 class Logger:
@@ -8,7 +8,7 @@ class Logger:
 
     # pass in result and transfer it to TestRecord format
     def log(self, result):
-        record = TestRecord(
+        record = OneTestRecord(
             test_name=result.test_name,
             start_time=result.start_time,
             end_time=result.end_time,

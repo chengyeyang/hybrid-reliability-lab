@@ -1,7 +1,7 @@
 from src.framework.result import Result
 from src.logger.logger import Logger
 import datetime
-from src.data.test_record import TestRecord as OneTestRecord
+from src.data.test_record import OneTestRecord as OneTestRecord
 
 
 def test_logger_records_result_data():
