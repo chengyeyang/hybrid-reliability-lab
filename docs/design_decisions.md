@@ -229,3 +229,34 @@ A header is written only when the target file does not exist or exists but is em
 preserving accumulated test history. Exporting an empty record collection performs no file operation. Records are written
 in the order provided by the caller so exported data preserves the ordering of the source collection.
 
+---
+
+## 2026-08-24
+
+### Decision 24: Generate Reports from TestRecord Data
+
+Reason:
+
+ReportGenerator consumes completed TestRecord objects rather than execution-layer Result objects or persisted CSV data.
+TestRecord provides the stable data-layer representation of completed test executions and allows reporting to remain
+independent from both test execution and persistence concerns. This keeps Result scoped to execution, avoids coupling
+report generation to a specific storage format, and allows the same completed test data to be consumed independently by
+CSV export, reporting, and future analysis components.
+
+### Decision 25: Separate Report Calculation from Report Representation
+
+Reason:
+
+ReportGenerator is responsible for deriving report information from completed TestRecord data, while TestReport only
+represents the resulting report data. Keeping calculation logic outside TestReport prevents the report model from
+combining data representation with aggregation behavior. This separation also allows TestReport data to be consumed by
+future visualization and dashboard components without requiring them to depend on report-generation logic.
+
+### Decision 26: Represent Unavailable Report Statistics Explicitly
+
+Reason:
+
+Report statistics that cannot be calculated because no relevant data exists are represented as None rather than as zero.
+An empty test collection therefore produces no pass rate, while a report with no valid measurements produces no minimum,
+maximum, or average measurement. This distinguishes unavailable statistics from valid zero-valued results. Measurement
+values are excluded from statistics only when they are None, preserving zero as a valid measurement value.

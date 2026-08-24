@@ -347,3 +347,40 @@
 - [x] Add automated tests for CSV export behavior
 - [x] Refactor repeated CSVExporter test setup while preserving test intent
 - [x] Run full regression tests — 48 tests passed
+
+---
+
+# Day 15
+
+## Summary
+> Introduce the first reporting layer for completed test data by adding ReportGenerator and TestReport. Keep reporting
+> independent from test execution and CSV persistence by generating reports directly from the data-layer TestRecord
+> representation. Aggregate test outcomes into execution counts and pass rate, calculate measurement statistics from
+> available measurement values, and preserve valid zero measurements while excluding missing values. Include summarized
+> failure details for FAIL and ERROR records and reject unsupported outcome values. Separate report calculation from report
+> representation so generated report data can be consumed by future visualization and dashboard components. Add automated
+> tests for outcome aggregation, empty input, invalid outcomes, measurement statistics, missing measurements, zero-valued
+> measurements, and failure details, refactor repeated test setup, and verify the complete framework through regression
+> testing.
+
+## Steps
+- [x] Define the responsibility boundary of the reporting layer
+- [x] Keep reporting independent from the test execution framework
+- [x] Use completed TestRecord data as the reporting input
+- [x] Introduce TestReport as the structured report data representation
+- [x] Introduce ReportGenerator for report calculation
+- [x] Separate report calculation from report representation
+- [x] Aggregate total, PASS, FAIL, and ERROR test counts
+- [x] Calculate pass rate from completed test records
+- [x] Represent pass rate as unavailable when no test records exist
+- [x] Calculate measurement count, minimum, maximum, and average
+- [x] Exclude missing measurements from measurement statistics
+- [x] Preserve zero as a valid measurement value
+- [x] Represent unavailable measurement statistics explicitly
+- [x] Collect summarized failure details for FAIL and ERROR records
+- [x] Exclude PASS records from failure details
+- [x] Reject unsupported test outcomes with ValueError
+- [x] Add automated tests for report generation behavior
+- [x] Refactor repeated report test setup while preserving test intent
+- [x] Run full regression tests — 55 tests passed
+

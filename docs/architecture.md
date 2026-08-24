@@ -24,6 +24,7 @@ The system simulates an automated testing laboratory capable of:
 - Data
 - Logger
 - Export
+- Report
 - Analysis
 - Dashboard
 
@@ -88,6 +89,24 @@ The system simulates an automated testing laboratory capable of:
 5. Preserves the input record order during export
 6. Performs no file operation when no records are provided
 
+**ReportGenerator**: Generates structured test summaries from completed test record data
+1. Receives completed `TestRecord` objects for report generation
+2. Aggregates test outcomes into total, pass, fail, and error counts
+3. Calculates the pass rate when test records are available
+4. Calculates measurement count, minimum, maximum, and average from available measurement values
+5. Excludes missing measurements from measurement statistics while preserving valid zero values
+6. Collects relevant failure information from `FAIL` and `ERROR` records
+7. Rejects records with unsupported test outcomes
+8. Produces a `TestReport` without modifying the source test records
+
+**TestReport**: Represents aggregated report data derived from completed test records
+1. Stores total test, pass, fail, and error counts
+2. Stores the calculated pass rate, or no pass rate when no tests are available
+3. Stores measurement count, minimum, maximum, and average statistics
+4. Represents unavailable measurement statistics explicitly when no valid measurements exist
+5. Stores summarized failure details for `FAIL` and `ERROR` test records
+6. Contains report data only and performs no report calculation
+
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
 2. Carries the associated result, failure stage, and timestamp. 
@@ -118,6 +137,8 @@ flowchart TD
     TREC[TestRecord]
     EXP[CSVExporter]
     CSV[(CSV File)]
+    RGEN[ReportGenerator]
+    RPT[TestReport]
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
@@ -136,8 +157,12 @@ flowchart TD
     TR --> CALLER
     CALLER --> LOG
     LOG --> TREC
+
     TREC --> EXP
     EXP --> CSV
+
+    TREC --> RGEN
+    RGEN --> RPT
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
@@ -152,8 +177,12 @@ execution and returns them through TestRunner to the caller. Execution results a
 stored as persistent state in TestSequence. The caller can pass completed Results to the Logger after execution, keeping
 result logging outside the test execution framework. The Logger converts each completed Result into an immutable
 TestRecord with its own record identity, providing a data-layer representation for downstream data processing.
-CSVExporter can persist completed TestRecord data into CSV format while preserving existing test history, record order,
-and a stable serialization format for future analysis and reporting.
+
+Completed TestRecord data can be consumed independently by downstream components. CSVExporter persists TestRecord data
+into CSV format while preserving existing test history, record order, and a stable serialization format. ReportGenerator
+aggregates completed TestRecord data into a TestReport containing outcome counts, pass rate, measurement statistics, and
+failure details. Reporting operates on the data-layer TestRecord representation and remains independent from the
+execution-layer Result representation and CSV persistence format.
 
 ## Error Handling Flow
 ```mermaid
