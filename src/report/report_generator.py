@@ -1,4 +1,4 @@
-from src.report.test_report import TestReport
+from src.report.test_report import OneTestReport
 
 
 class ReportGenerator:
@@ -51,7 +51,7 @@ class ReportGenerator:
             maximum_measurement = max(measurements)
             average_measurement = sum(measurements) / len(measurements)
 
-        return TestReport(
+        return OneTestReport(
             total_tests=total_tests,
             pass_count=pass_count,
             fail_count=fail_count,

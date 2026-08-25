@@ -1,4 +1,4 @@
-class TestReport:
+class OneTestReport:
     def __init__(
         self,
         total_tests: int,
