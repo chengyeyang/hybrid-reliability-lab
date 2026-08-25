@@ -260,3 +260,35 @@ Report statistics that cannot be calculated because no relevant data exists are 
 An empty test collection therefore produces no pass rate, while a report with no valid measurements produces no minimum,
 maximum, or average measurement. This distinguishes unavailable statistics from valid zero-valued results. Measurement
 values are excluded from statistics only when they are None, preserving zero as a valid measurement value.
+
+---
+
+## 2026-08-25
+
+### Decision 27: Use TestReport as the Visualization Input
+
+Reason:
+
+Report visualization consumes the structured TestReport representation rather than TestRecord, Result, or persisted CSV
+data. TestReport already contains the aggregated outcome counts and measurement statistics required for visualization,
+allowing the visualization layer to focus only on presentation. This prevents visualization logic from duplicating report
+calculation and keeps it independent from test execution and persistence formats.
+
+### Decision 28: Keep Visualization Creation Separate from Display Control
+
+Reason:
+
+Report visualization functions create and return Matplotlib Figure and Axes objects without calling plt.show(). This keeps
+visualization creation separate from display behavior and allows the caller to decide how the generated visualization is
+used. The same visualization output can therefore be displayed interactively, embedded in a future dashboard, saved by a
+downstream component, or inspected by automated tests without changing the visualization logic.
+
+### Decision 29: Represent Empty Visualization States Explicitly
+
+Reason:
+
+When no test results are available, the outcome visualization displays "No test data" instead of producing an ambiguous
+empty chart. When tests exist without valid measurement data, the measurement visualization displays "No measurement
+data". These conditions are treated as valid empty states rather than exceptions because the absence of reportable data
+does not indicate a visualization failure. Distinguishing the two states also preserves the semantic difference between
+having no tests and having no available measurements.

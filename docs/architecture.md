@@ -25,6 +25,7 @@ The system simulates an automated testing laboratory capable of:
 - Logger
 - Export
 - Report
+- Visualization
 - Analysis
 - Dashboard
 
@@ -107,6 +108,15 @@ The system simulates an automated testing laboratory capable of:
 5. Stores summarized failure details for `FAIL` and `ERROR` test records
 6. Contains report data only and performs no report calculation
 
+**ReportVisualization**: Converts structured test report data into visual representations
+1. Receives a completed `TestReport` as visualization input
+2. Visualizes PASS, FAIL, and ERROR distribution as a pie chart
+3. Visualizes minimum, average, and maximum measurement statistics as a bar chart
+4. Displays measurement count as supplementary visualization context
+5. Represents empty test and measurement data explicitly instead of producing ambiguous empty charts
+6. Returns the generated Figure and Axes without controlling how the visualization is displayed
+7. Performs no report calculation and relies on the statistics already provided by `TestReport`
+
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
 2. Carries the associated result, failure stage, and timestamp. 
@@ -133,28 +143,38 @@ flowchart TD
     TC[TestCase]
     RES[Result]
     CALLER[Caller]
+
     LOG[Logger]
     TREC[TestRecord]
+
     EXP[CSVExporter]
     CSV[(CSV File)]
+
     RGEN[ReportGenerator]
     RPT[TestReport]
+
+    VIS[Report Visualization]
+
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
+
     COM[Communication]
     HW[Hardware]
     SEN[Sensor]
 
     TR --> TS
     TR --> DEV
-    TS --> TC
-    TC --> DEV
 
+    TS --> TC
+
+    TC --> DEV
     TC --> RES
+
     RES --> TS
     TS --> TR
     TR --> CALLER
+
     CALLER --> LOG
     LOG --> TREC
 
@@ -163,6 +183,9 @@ flowchart TD
 
     TREC --> RGEN
     RGEN --> RPT
+
+    RPT --> VIS
+    VIS --> CALLER
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
@@ -183,6 +206,11 @@ into CSV format while preserving existing test history, record order, and a stab
 aggregates completed TestRecord data into a TestReport containing outcome counts, pass rate, measurement statistics, and
 failure details. Reporting operates on the data-layer TestRecord representation and remains independent from the
 execution-layer Result representation and CSV persistence format.
+
+TestReport data can be consumed by the visualization layer to produce presentation-oriented representations without
+recalculating report statistics. Report visualization converts outcome counts into a pie chart and measurement summary
+statistics into a bar chart, while representing empty data states explicitly. Generated Figure and Axes objects are
+returned to the caller so display and downstream presentation remain outside the visualization functions.
 
 ## Error Handling Flow
 ```mermaid
