@@ -117,6 +117,18 @@ The system simulates an automated testing laboratory capable of:
 6. Returns the generated Figure and Axes without controlling how the visualization is displayed
 7. Performs no report calculation and relies on the statistics already provided by `TestReport`
 
+**Dashboard**: Presents completed test report and record data through an interactive user-facing interface
+1. Receives a completed `TestReport` for overall test summary and visualization
+2. Receives completed `TestRecord` objects for individual test history
+3. Displays total test count, pass rate, and PASS, FAIL, and ERROR counts
+4. Reuses existing report visualization functions for outcome and measurement charts
+5. Displays summarized failure information from the `TestReport`
+6. Displays individual test history from completed `TestRecord` data
+7. Supports basic outcome-based filtering of displayed test history
+8. Represents unavailable and empty presentation states explicitly
+9. Performs no report calculation and does not modify source report or record data
+10. Remains independent from test execution, logging, and persistence responsibilities
+
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
 2. Carries the associated result, failure stage, and timestamp. 
@@ -143,34 +155,26 @@ flowchart TD
     TC[TestCase]
     RES[Result]
     CALLER[Caller]
-
     LOG[Logger]
     TREC[TestRecord]
-
     EXP[CSVExporter]
     CSV[(CSV File)]
-
     RGEN[ReportGenerator]
     RPT[TestReport]
-
     VIS[Report Visualization]
-
+    DASH[Dashboard]
     DEV[Device Contract]
     REAL[RealDevice]
     VIRTUAL[VirtualDevice]
-
     COM[Communication]
     HW[Hardware]
     SEN[Sensor]
 
     TR --> TS
     TR --> DEV
-
     TS --> TC
-
     TC --> DEV
     TC --> RES
-
     RES --> TS
     TS --> TR
     TR --> CALLER
@@ -185,11 +189,13 @@ flowchart TD
     RGEN --> RPT
 
     RPT --> VIS
-    VIS --> CALLER
+    VIS --> DASH
+
+    RPT --> DASH
+    TREC --> DASH
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
-
     REAL --> COM
     REAL --> HW
     REAL --> SEN
@@ -211,6 +217,15 @@ TestReport data can be consumed by the visualization layer to produce presentati
 recalculating report statistics. Report visualization converts outcome counts into a pie chart and measurement summary
 statistics into a bar chart, while representing empty data states explicitly. Generated Figure and Axes objects are
 returned to the caller so display and downstream presentation remain outside the visualization functions.
+
+The dashboard consumes completed `TestReport` and `TestRecord` data for user-facing presentation. Overall summary 
+information, failure information, and report visualizations are derived from the existing `TestReport`, while individual
+`TestRecord` objects provide test history and filtering data. The dashboard reuses the existing visualization layer 
+rather than recreating chart-generation logic and does not recalculate statistics already produced by `ReportGenerator`.
+
+Dashboard filtering is currently limited to the displayed test history. Filtering does not modify the overall `TestReport` 
+summary or visualization data. This keeps report calculation centralized in `ReportGenerator` while allowing the dashboard 
+to provide lightweight interactive inspection of individual completed test records.
 
 ## Error Handling Flow
 ```mermaid

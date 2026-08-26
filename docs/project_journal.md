@@ -418,3 +418,44 @@
 - [x] Verify empty test and measurement visualization behavior
 - [x] Update project dependency requirements
 - [x] Run full regression tests — 61 tests passed
+
+---
+
+# Day 17
+
+## Summary
+> Introduce the first interactive Dashboard MVP for completed hardware test data using Streamlit. Present overall test
+> summary metrics directly from TestReport, reuse the existing outcome and measurement visualization functions, and
+> display summarized failure information without duplicating report or visualization logic. Add individual test history
+> using completed TestRecord data and provide basic outcome-based filtering while keeping the overall report summary
+> unchanged. Separate temporary dashboard sample data from dashboard presentation logic so the sample input can later be
+> replaced by the real execution pipeline during end-to-end integration. Extract and test dashboard-specific pure logic
+> for pass-rate formatting and history filtering, represent unavailable and empty presentation states explicitly, resolve
+> Streamlit and PyArrow compatibility issues through pinned dependencies, and verify the complete framework through
+> regression testing.
+
+## Steps
+- [x] Define the responsibility boundary of the dashboard layer
+- [x] Identify TestReport and TestRecord responsibilities within the dashboard
+- [x] Define the minimum Dashboard MVP information layout
+- [x] Research Python dashboard technology options
+- [x] Select Streamlit for the Dashboard MVP
+- [x] Add Streamlit dashboard dependencies
+- [x] Create the dashboard module and Streamlit entry point
+- [x] Display overall test summary metrics
+- [x] Represent unavailable pass rate as user-facing N/A
+- [x] Reuse the existing outcome visualization
+- [x] Reuse the existing measurement visualization
+- [x] Display summarized failure information
+- [x] Represent the no-failure state explicitly
+- [x] Display individual test history from TestRecord data
+- [x] Add outcome-based test history filtering
+- [x] Keep history filtering independent from overall report statistics
+- [x] Represent empty history and empty filtered-result states explicitly
+- [x] Separate temporary dashboard sample data from presentation logic
+- [x] Extract dashboard helper logic for filtering and pass-rate formatting
+- [x] Add automated tests for dashboard helper behavior
+- [x] Preserve zero pass rate separately from unavailable pass rate
+- [x] Resolve Streamlit and PyArrow compatibility issues
+- [x] Pin compatible dashboard dependency versions
+- [x] Run full regression tests — 69 tests passed

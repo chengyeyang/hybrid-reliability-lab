@@ -292,3 +292,54 @@ empty chart. When tests exist without valid measurement data, the measurement vi
 data". These conditions are treated as valid empty states rather than exceptions because the absence of reportable data
 does not indicate a visualization failure. Distinguishing the two states also preserves the semantic difference between
 having no tests and having no available measurements.
+
+---
+
+## 2026-08-26
+
+### Decision 30: Use TestReport and TestRecord Data for Different Dashboard Responsibilities
+
+Reason:
+
+The dashboard consumes both `TestReport` and completed `TestRecord` data because they represent different levels of 
+information. `TestReport` provides aggregated execution summary, measurement statistics, and failure information, while 
+individual `TestRecord` objects preserve the per-test information required for test history and filtering.
+
+The dashboard does not reconstruct aggregated statistics from `TestRecord` data when the same information is already 
+available in `TestReport`. This keeps report calculation centralized in `ReportGenerator` and avoids duplicating 
+reporting rules inside the presentation layer.
+
+### Decision 31: Reuse Existing Report Visualizations in the Dashboard
+
+Reason:
+
+The dashboard reuses the existing outcome and measurement visualization functions instead of creating duplicate 
+chart-generation logic. Report visualization remains responsible for converting `TestReport` data into Matplotlib Figure 
+objects, while the dashboard is responsible for presenting those figures through the user interface.
+
+This preserves the separation between visualization creation and dashboard presentation and allows the same visualization 
+logic to remain reusable outside the dashboard.
+
+### Decision 32: Limit Dashboard Filtering to Test History in the MVP
+
+Reason:
+
+The initial dashboard applies outcome-based filtering only to the displayed `TestRecord` history. Overall summary 
+statistics and report visualizations continue to represent the complete `TestReport` and are not recalculated when the 
+history filter changes.
+
+Supporting filtered analytics would require generating a new report from the filtered record set rather than recalculating 
+reporting statistics directly inside the dashboard. That behavior is intentionally deferred to keep the Dashboard MVP 
+focused and preserve the existing reporting responsibility boundary.
+
+### Decision 33: Use Streamlit for the Dashboard MVP
+
+Reason:
+
+Streamlit is used for the initial dashboard because it integrates directly with the existing Python and Matplotlib-based 
+project, supports summary metrics, tabular data, and basic interactive filtering, and requires minimal additional UI 
+infrastructure.
+
+The Dashboard MVP does not currently require complex callback-driven interactions or a separate frontend architecture. 
+More advanced dashboard frameworks can be reconsidered if future interaction and scalability requirements exceed the 
+capabilities needed by the current MVP.
