@@ -1,2 +1,4 @@
 pytest
 matplotlib
+streamlit==1.62.0
+pyarrow==16.0.0
