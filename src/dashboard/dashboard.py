@@ -1,10 +1,26 @@
 import streamlit as st
 from src.visualization.report_visualization import plot_outcome, plot_measurements
-from src.dashboard.sample_data import report, records
+
+from src.data.csv_reader import CSVReader
+from src.report.report_generator import ReportGenerator
+from pathlib import Path
+
 from src.dashboard.dashboard_helpers import filter_records, format_pass_rate
 
-
 st.title("Hardware Test Dashboard")
+
+file_path = Path("output/test_results.csv")
+
+if not file_path.exists():
+    st.info("No persisted test data available.")
+    records = []
+else:
+    reader = CSVReader()
+    records = reader.read(file_path)
+
+generator = ReportGenerator()
+report = generator.generate(records)
+
 st.subheader("Overall Test Summary")
 
 summary_columns = st.columns(2)

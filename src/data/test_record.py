@@ -11,7 +11,7 @@ class OneTestRecord:
     start_time: datetime.datetime
     end_time: datetime.datetime
     duration: datetime.timedelta
-    measurement: int | float
+    measurement: int | float | None
     outcome: str
 
     error: str | None
