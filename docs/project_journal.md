@@ -459,3 +459,47 @@
 - [x] Resolve Streamlit and PyArrow compatibility issues
 - [x] Pin compatible dashboard dependency versions
 - [x] Run full regression tests — 69 tests passed
+
+---
+
+# Day 18
+
+## Summary
+> Integrate the existing execution, logging, persistence, reporting, and dashboard components into the first complete
+> end-to-end hardware test data flow. Use the existing `main.py` entry point as the MVP orchestration owner, execute
+> deterministic tests through `VirtualDevice`, convert completed execution results into immutable `TestRecord` data, and
+> persist records through `CSVExporter`. Add `CSVReader` to restore persisted CSV history into typed `TestRecord` objects
+> and replace the dashboard's runtime sample-data dependency with persisted test history. Generate dashboard report
+> statistics through the existing `ReportGenerator`, preserve explicit missing and empty presentation states, and keep
+> the Streamlit dashboard independent from the test execution lifecycle. Verify PASS and FAIL outcome consistency across
+> execution results, records, CSV persistence, reporting, and dashboard presentation. Identify the existing ERROR path as
+> an execution-level `ExecutionError` propagation path that does not yet reach persistence or reporting, leaving failure
+> integration behavior for the reliability-focused follow-up work. Add CSV round-trip and end-to-end integration tests
+> and verify the complete framework through regression testing with 75 passing tests.
+
+## Steps
+- [x] Review the existing execution-to-dashboard component boundaries
+- [x] Define `main.py` as the top-level MVP orchestration owner
+- [x] Keep orchestration separate from component-specific responsibilities
+- [x] Replace the main execution path with `VirtualDevice`
+- [x] Collect completed results returned by `TestRunner`
+- [x] Convert completed results into `TestRecord` data through `Logger`
+- [x] Persist completed records to the `output` directory through `CSVExporter`
+- [x] Generate a `TestReport` from completed execution records
+- [x] Identify persisted CSV data as the runtime boundary between execution and dashboard processes
+- [x] Add `CSVReader` for restoring persisted test records
+- [x] Restore UUID, datetime, duration, measurement, outcome, and error field types from CSV
+- [x] Preserve unavailable measurements separately from valid zero measurements during CSV restoration
+- [x] Add CSV export/read round-trip tests
+- [x] Verify normal, unavailable, zero, and multiple-record CSV restoration
+- [x] Replace the dashboard runtime sample-data dependency with persisted CSV history
+- [x] Generate the dashboard `TestReport` from restored historical `TestRecord` data
+- [x] Handle missing persisted dashboard data without crashing
+- [x] Preserve existing dashboard empty and unavailable presentation states
+- [x] Verify PASS outcome consistency across execution, logging, persistence, reporting, and dashboard presentation
+- [x] Verify FAIL outcome consistency across execution, logging, persistence, reporting, and dashboard presentation
+- [x] Identify execution-level ERROR propagation behavior for follow-up reliability work
+- [x] Add end-to-end PASS integration coverage
+- [x] Add end-to-end FAIL integration coverage
+- [x] Keep dashboard sample data available only for deterministic dashboard tests
+- [x] Run full regression tests — 75 tests passed

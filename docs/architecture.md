@@ -90,6 +90,14 @@ The system simulates an automated testing laboratory capable of:
 5. Preserves the input record order during export
 6. Performs no file operation when no records are provided
 
+**CSVReader**: Restores persisted test record data from CSV format
+1. Reads persisted test record data from an existing CSV file
+2. Deserializes CSV field values back into the data types required by `TestRecord`
+3. Restores timestamps, durations, record identifiers, measurements, outcomes, and error information
+4. Preserves unavailable measurement and error values as `None`
+5. Preserves valid zero measurement values separately from unavailable measurements
+6. Returns completed `TestRecord` objects for downstream reporting and presentation
+
 **ReportGenerator**: Generates structured test summaries from completed test record data
 1. Receives completed `TestRecord` objects for report generation
 2. Aggregates test outcomes into total, pass, fail, and error counts
@@ -117,17 +125,17 @@ The system simulates an automated testing laboratory capable of:
 6. Returns the generated Figure and Axes without controlling how the visualization is displayed
 7. Performs no report calculation and relies on the statistics already provided by `TestReport`
 
-**Dashboard**: Presents completed test report and record data through an interactive user-facing interface
-1. Receives a completed `TestReport` for overall test summary and visualization
-2. Receives completed `TestRecord` objects for individual test history
+**Dashboard**: Presents persisted test report and record data through an interactive user-facing interface
+1. Loads persisted test history through `CSVReader`
+2. Generates the overall `TestReport` from the restored historical `TestRecord` data through `ReportGenerator`
 3. Displays total test count, pass rate, and PASS, FAIL, and ERROR counts
 4. Reuses existing report visualization functions for outcome and measurement charts
-5. Displays summarized failure information from the `TestReport`
-6. Displays individual test history from completed `TestRecord` data
+5. Displays summarized failure information from the generated `TestReport`
+6. Displays individual test history from restored `TestRecord` data
 7. Supports basic outcome-based filtering of displayed test history
-8. Represents unavailable and empty presentation states explicitly
-9. Performs no report calculation and does not modify source report or record data
-10. Remains independent from test execution, logging, and persistence responsibilities
+8. Represents missing persisted data, unavailable statistics, and empty presentation states explicitly
+9. Performs no report calculation itself and does not modify source report or record data
+10. Remains independent from test execution and logging responsibilities
 
 **ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
 1. Preserves the original exception together with test context. 
@@ -140,6 +148,17 @@ The system simulates an automated testing laboratory capable of:
 2. Can be raised by concrete device implementations when an operation is invalid or cannot be completed
 3. Keeps device-level failures independent from framework-level `ExecutionError`
 
+## Application Orchestration
+
+The project entry point in `main.py` owns the top-level execution orchestration for the current MVP. It configures the
+device and test sequence, starts execution through `TestRunner`, passes completed execution results to `Logger`, and
+passes the resulting `TestRecord` data to downstream persistence and reporting components.
+
+The entry point coordinates existing components without taking over their internal responsibilities. Test execution,
+result-to-record conversion, CSV serialization, and report calculation remain owned by their respective components.
+A separate application-service layer is not introduced because the current MVP orchestration does not yet require an
+additional abstraction.
+
 ## Core Execution and Data Flow
 
 The following diagram shows the direct interactions and data flow between the core components during and after test
@@ -150,15 +169,17 @@ Dashed arrows represent implementation of an abstraction contract.
 
 ```mermaid
 flowchart TD
+    MAIN[main.py / Application Entry Point]
     TR[TestRunner]
     TS[TestSequence]
     TC[TestCase]
     RES[Result]
-    CALLER[Caller]
     LOG[Logger]
     TREC[TestRecord]
     EXP[CSVExporter]
     CSV[(CSV File)]
+    READ[CSVReader]
+    HTREC[Restored TestRecord History]
     RGEN[ReportGenerator]
     RPT[TestReport]
     VIS[Report Visualization]
@@ -170,6 +191,7 @@ flowchart TD
     HW[Hardware]
     SEN[Sensor]
 
+    MAIN --> TR
     TR --> TS
     TR --> DEV
     TS --> TC
@@ -177,9 +199,9 @@ flowchart TD
     TC --> RES
     RES --> TS
     TS --> TR
-    TR --> CALLER
+    TR --> MAIN
 
-    CALLER --> LOG
+    MAIN --> LOG
     LOG --> TREC
 
     TREC --> EXP
@@ -188,11 +210,14 @@ flowchart TD
     TREC --> RGEN
     RGEN --> RPT
 
+    CSV --> READ
+    READ --> HTREC
+    HTREC --> RGEN
+    HTREC --> DASH
+
     RPT --> VIS
     VIS --> DASH
-
     RPT --> DASH
-    TREC --> DASH
 
     REAL -. implements .-> DEV
     VIRTUAL -. implements .-> DEV
@@ -213,19 +238,29 @@ aggregates completed TestRecord data into a TestReport containing outcome counts
 failure details. Reporting operates on the data-layer TestRecord representation and remains independent from the
 execution-layer Result representation and CSV persistence format.
 
+Persisted CSV data can be restored through `CSVReader` for downstream consumers that run independently from the main
+test execution process. `CSVReader` reconstructs persisted CSV fields into completed `TestRecord` objects, including
+timestamps, durations, identifiers, measurements, outcomes, and error information. Missing optional values are restored
+as unavailable values while valid zero measurements remain distinct from missing measurements.
+
 TestReport data can be consumed by the visualization layer to produce presentation-oriented representations without
 recalculating report statistics. Report visualization converts outcome counts into a pie chart and measurement summary
 statistics into a bar chart, while representing empty data states explicitly. Generated Figure and Axes objects are
 returned to the caller so display and downstream presentation remain outside the visualization functions.
 
-The dashboard consumes completed `TestReport` and `TestRecord` data for user-facing presentation. Overall summary 
-information, failure information, and report visualizations are derived from the existing `TestReport`, while individual
-`TestRecord` objects provide test history and filtering data. The dashboard reuses the existing visualization layer 
-rather than recreating chart-generation logic and does not recalculate statistics already produced by `ReportGenerator`.
+The dashboard uses the persisted CSV file as its runtime data boundary rather than depending directly on the test
+execution process. Persisted test history is restored through `CSVReader`, and the restored `TestRecord` collection is
+passed to `ReportGenerator` to produce the `TestReport` used for overall summary information and visualization. The same
+restored records provide individual test history and filtering data.
 
-Dashboard filtering is currently limited to the displayed test history. Filtering does not modify the overall `TestReport` 
-summary or visualization data. This keeps report calculation centralized in `ReportGenerator` while allowing the dashboard 
-to provide lightweight interactive inspection of individual completed test records.
+This persistence boundary keeps the Streamlit dashboard independent from `TestRunner`, `TestSequence`, `TestCase`, and
+`Logger`. The dashboard can therefore run as a separate process without triggering test execution. When no persisted CSV
+data is available, the dashboard represents the missing-data state explicitly and uses the existing empty-report behavior
+rather than failing during startup.
+
+Dashboard filtering remains limited to the displayed test history. Filtering does not modify the overall historical
+`TestReport` summary or visualization data. This keeps report calculation centralized in `ReportGenerator` while allowing
+the dashboard to provide lightweight interactive inspection of persisted test records.
 
 ## Error Handling Flow
 ```mermaid

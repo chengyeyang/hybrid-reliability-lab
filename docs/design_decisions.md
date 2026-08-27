@@ -343,3 +343,45 @@ infrastructure.
 The Dashboard MVP does not currently require complex callback-driven interactions or a separate frontend architecture. 
 More advanced dashboard frameworks can be reconsidered if future interaction and scalability requirements exceed the 
 capabilities needed by the current MVP.
+
+---
+
+## 2028-08-27
+
+### Decision 34: Keep Top-Level Orchestration in the Existing Application Entry Point
+
+Reason:
+
+The current MVP uses `main.py` as the top-level orchestration owner for configuring the device and test sequence,
+starting execution through `TestRunner`, passing completed results to `Logger`, and forwarding completed `TestRecord`
+data to downstream persistence and reporting components.
+
+A separate application-service layer or additional integration entry point is not introduced because the current
+orchestration does not yet contain enough independent responsibility to justify another abstraction. Individual
+components retain ownership of execution, logging, persistence, and report-generation behavior while the entry point
+only coordinates their data flow.
+
+### Decision 35: Use Persisted Test Records as the Dashboard Runtime Data Boundary
+
+Reason:
+
+The Streamlit dashboard runs independently from the main test execution entry point and therefore does not directly
+receive in-memory execution data from `main.py`. Persisted CSV test records are used as the runtime boundary between
+test execution and dashboard presentation.
+
+The dashboard restores completed `TestRecord` data from CSV and generates its historical `TestReport` through the
+existing `ReportGenerator`. This keeps the dashboard independent from test execution and logging responsibilities,
+avoids allowing the presentation layer to trigger the application execution lifecycle, and allows persisted test
+history to remain available across separate executions.
+
+### Decision 36: Restore Persisted CSV Data into TestRecord Objects Before Downstream Processing
+
+Reason:
+
+Persisted CSV data is deserialized through `CSVReader` back into `TestRecord` objects before being used by reporting or
+dashboard components. This preserves `TestRecord` as the common data-layer representation instead of allowing downstream
+components to depend directly on raw CSV rows or string-based serialized values.
+
+The reader restores identifiers, timestamps, durations, numeric measurements, outcomes, and optional error information
+to their expected data types. Empty serialized measurement and error values are restored as `None`, while valid zero
+measurements remain available numeric values.
