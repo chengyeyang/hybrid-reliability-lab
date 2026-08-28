@@ -3,6 +3,7 @@ from src.framework.test_case import TestCase1 as HardwareTestCase1  # to avoid a
 
 import pytest
 from src.framework.execution_error import ExecutionError
+from src.device.virtual_device import VirtualDevice
 
 
 class FakeDevice:
@@ -10,10 +11,12 @@ class FakeDevice:
         self.measurement = measurement
         self.move_should_fail = move_should_fail
         self.stop_should_fail = stop_should_fail
+        self.is_moving = False
 
     def move(self):
         if self.move_should_fail:
             raise Exception("Failed to move hardware")
+        self.is_moving = True
 
     def read(self):
         return self.measurement
@@ -21,6 +24,7 @@ class FakeDevice:
     def stop(self):
         if self.stop_should_fail:
             raise Exception("Failed to stop hardware")
+        self.is_moving = False
 
 
 def test_testcase_returns_pass_result():
@@ -84,3 +88,64 @@ def test_testcase_preserves_cleanup_error_when_move_and_cleanup_fail():
     assert exc_info.value.result.outcome == "ERROR"
     assert str(exc_info.value.original_error) == "Failed to move hardware"
     assert str(exc_info.value.cleanup_error) == "Failed to stop hardware"
+
+
+def test_test_case_raises_execution_error_on_move_failure():
+    device = FakeDevice(measurement=6, move_should_fail=True)
+
+    test_case = HardwareTestCase1(device)
+
+    with pytest.raises(ExecutionError) as exc_info:
+        test_case.run()
+
+    execution_error = exc_info.value
+
+    assert execution_error.stage == "move"
+    assert execution_error.result.outcome == "ERROR"
+    assert execution_error.result.error == "Failed to move hardware"
+    assert execution_error.result.cleanup_error is None
+    assert device.is_moving is False
+
+def test_test_case_preserves_pass_outcome_on_cleanup_failure():
+    device = FakeDevice(
+        measurement=6,
+        stop_should_fail=True
+    )
+
+    test_case = HardwareTestCase1(device)
+
+    with pytest.raises(ExecutionError) as exc_info:
+        test_case.run()
+
+    execution_error = exc_info.value
+
+    assert execution_error.result.outcome == "PASS"
+    assert execution_error.result.error is None
+    assert execution_error.result.cleanup_error == "Failed to stop hardware"
+
+    assert execution_error.stage == "cleanup"
+    assert str(execution_error.original_error) == "Failed to stop hardware"
+    assert execution_error.cleanup_error is None
+
+
+def test_test_case_preserves_execution_and_cleanup_errors():
+    device = FakeDevice(
+        measurement=6,
+        move_should_fail=True,
+        stop_should_fail=True,
+    )
+
+    test_case = HardwareTestCase1(device)
+
+    with pytest.raises(ExecutionError) as exc_info:
+        test_case.run()
+
+    execution_error = exc_info.value
+
+    assert execution_error.result.outcome == "ERROR"
+    assert execution_error.result.error == "Failed to move hardware"
+    assert execution_error.result.cleanup_error == "Failed to stop hardware"
+
+    assert execution_error.stage == "move"
+    assert str(execution_error.original_error) == "Failed to move hardware"
+    assert str(execution_error.cleanup_error) == "Failed to stop hardware"

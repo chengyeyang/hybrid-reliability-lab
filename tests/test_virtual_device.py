@@ -232,3 +232,39 @@ def test_virtual_device_connection_failure_recovery():
     virtual_device.connect()
 
     assert virtual_device.is_connected is True
+
+
+def test_move_failure_can_be_enabled():
+    virtual_device = VirtualDevice()
+    virtual_device.connect()
+    virtual_device.set_move_failure(True)
+
+    with pytest.raises(DeviceError):
+        virtual_device.move()
+
+    assert virtual_device.is_moving is False
+
+
+def test_read_failure_can_be_enabled():
+    device = VirtualDevice()
+    device.connect()
+    device.set_read_failure(True)
+
+    with pytest.raises(DeviceError):
+        device.read()
+
+    device.set_read_failure(False)
+
+    assert device.read() == 25
+
+
+def test_stop_failure_can_be_enabled():
+    device = VirtualDevice()
+    device.connect()
+    device.move()
+    device.set_stop_failure(True)
+
+    with pytest.raises(DeviceError):
+        device.stop()
+
+    assert device.is_moving is True

@@ -19,6 +19,7 @@ def make_test_record(
         measurement=measurement,
         outcome=outcome,
         error=error,
+        cleanup_error=None
     )
 
 
@@ -30,7 +31,8 @@ def test_csv_exporter_exports_single_record(tmp_path):  # tmp_path is a pytest f
             duration=datetime.timedelta(seconds=30),
             measurement=11.5,
             outcome="PASS",
-            error=None
+            error=None,
+            cleanup_error=None
         )
 
     file_path = tmp_path / "single_record.csv"
@@ -55,6 +57,7 @@ def test_csv_exporter_exports_single_record(tmp_path):  # tmp_path is a pytest f
         "measurement",
         "outcome",
         "error",
+        "cleanup_error"
     ]
 
     data_row = rows[1]
@@ -153,7 +156,8 @@ def test_csv_exporter_writes_header(tmp_path):  # tmp_path is a pytest fixture
         duration=datetime.timedelta(seconds=30),
         measurement=13.5,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None,
     )
 
     exporter = CSVExporter()
@@ -171,6 +175,7 @@ def test_csv_exporter_writes_header(tmp_path):  # tmp_path is a pytest fixture
         "measurement",
         "outcome",
         "error",
+        "cleanup_error"
     ]
 
     assert len(rows) == 2
@@ -188,6 +193,7 @@ def test_csv_exporter_serializes_record_fields(tmp_path):  # tmp_path is a pytes
         measurement=3.25,
         outcome="ERROR",
         error="Device connection failed",
+        cleanup_error=None,
     )
 
     file_path = tmp_path / "serializes_record_fields.csv"

@@ -7,6 +7,9 @@ class VirtualDevice(Device):
         self.is_moving = False
         self.measurement = 25
         self.connection_failure_enabled = False
+        self.move_failure_enabled = False
+        self.read_failure_enabled = False
+        self.stop_failure_enabled = False
 
     def connect(self):
         if self.connection_failure_enabled:
@@ -17,12 +20,18 @@ class VirtualDevice(Device):
         if not self.is_connected:
             raise DeviceError("Device must be connected before moving")
 
+        if self.move_failure_enabled:
+            raise DeviceError("Failed to move")
+
         self.is_moving = True  # this line will only be executed when connected, otherwise, it will have raise
         # DeviceError and leave this method
 
     def read(self):
         if not self.is_connected:
             raise DeviceError("Device must be connected before reading")
+
+        if self.read_failure_enabled:
+            raise DeviceError("Can not read from device")
 
         return self.measurement  # this line will only be executed when connected, otherwise, it will have raise
         # DeviceError and leave this method
@@ -31,7 +40,10 @@ class VirtualDevice(Device):
         if not self.is_connected:
             raise DeviceError("Device must be connected before stopping")
 
-        self.is_moving = False
+        if not self.stop_failure_enabled:
+            self.is_moving = False
+        else:
+            raise DeviceError("Fail to stop")
 
     def disconnect(self):
         self.is_connected = False
@@ -49,3 +61,13 @@ class VirtualDevice(Device):
 
     def set_connection_failure(self, enabled):
         self.connection_failure_enabled = enabled
+
+    def set_move_failure(self, enabled):
+        self.move_failure_enabled = enabled
+
+    def set_read_failure(self, enabled):
+        self.read_failure_enabled = enabled
+
+    def set_stop_failure(self, enabled):
+        self.stop_failure_enabled = enabled
+

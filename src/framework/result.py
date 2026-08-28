@@ -8,3 +8,4 @@ class Result:
         self.measurement = None
         self.outcome = ""
         self.error = None
+        self.cleanup_error = None

@@ -18,6 +18,7 @@ def make_test_record(
         measurement=measurement,
         outcome=outcome,
         error=error,
+        cleanup_error=None
     )
 
 

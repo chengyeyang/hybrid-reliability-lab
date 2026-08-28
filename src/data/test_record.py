@@ -15,6 +15,7 @@ class OneTestRecord:
     outcome: str
 
     error: str | None
+    cleanup_error: str | None
 
     # One dataclass rule states that fields without a default value cannot follow fields with a default value.
 

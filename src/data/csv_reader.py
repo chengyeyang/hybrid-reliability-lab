@@ -22,6 +22,7 @@ class CSVReader:
                     measurement = float(row["measurement"])
 
                 error = row["error"] if row["error"] else None
+                cleanup_error = row["cleanup_error"] if row["cleanup_error"] else None
 
                 record = OneTestRecord(
                     test_id=uuid.UUID(row["test_id"]),
@@ -31,7 +32,8 @@ class CSVReader:
                     duration=datetime.timedelta(seconds=float(row["duration"])),
                     outcome=row["outcome"],
                     measurement=measurement,
-                    error=error
+                    error=error,
+                    cleanup_error=cleanup_error
                 )
 
                 records.append(record)

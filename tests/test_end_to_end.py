@@ -76,3 +76,47 @@ def test_end_to_end_fail_flow(tmp_path):
     assert records[0].outcome == "FAIL"
     assert report.pass_count == 0
     assert report.fail_count == 1
+
+
+def test_end_to_end_error_flow(tmp_path):
+    device = VirtualDevice()
+    device.set_move_failure(True)
+
+    test_case1 = TestCase1(device)
+    test_case2 = TestCase1(device)
+
+    test_sequence = TestSequence()
+    test_sequence.add(test_case1)
+    test_sequence.add(test_case2)
+
+    runner = TestRunner(test_sequence, device)
+    results = runner.run()
+
+    logger = Logger()
+
+    for result in results:
+        logger.log(result)
+
+    records = logger.records
+
+    exporter = CSVExporter()
+    filepath = tmp_path / "test_results.csv"
+    exporter.export(records, filepath)
+
+    reader = CSVReader()
+    loaded_records = reader.read(filepath)
+
+    generator = ReportGenerator()
+    report = generator.generate(loaded_records)
+
+    assert len(results) == 1
+    assert results[0].outcome == "ERROR"
+    assert results[0].error == "Failed to move"
+    assert results[0].cleanup_error is None
+
+    assert loaded_records[0].outcome == "ERROR"
+    assert loaded_records[0].error == "Failed to move"
+
+    assert report.error_count == 1
+    assert report.pass_count == 0
+    assert report.fail_count == 0

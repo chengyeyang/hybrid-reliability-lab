@@ -15,7 +15,8 @@ class Logger:
             duration=result.duration,
             measurement=result.measurement,
             outcome=result.outcome,
-            error=result.error
+            error=result.error,
+            cleanup_error=result.cleanup_error
         )
 
         self.records.append(record)

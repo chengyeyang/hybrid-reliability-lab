@@ -16,7 +16,8 @@ def test_test_record_preserves_test_data():
         duration=duration,
         measurement=15,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None
     )
 
     assert record.test_name == "Test name"
@@ -37,7 +38,8 @@ def test_test_record_generates_unique_id():
         duration=datetime.timedelta(hours=1),
         measurement=15,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None
     )
 
     record2 = OneTestRecord(
@@ -47,7 +49,8 @@ def test_test_record_generates_unique_id():
         duration=datetime.timedelta(hours=1),
         measurement=15,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None
     )
 
     assert record1.test_id is not None
@@ -63,7 +66,8 @@ def test_test_record_is_immutable():
         duration=datetime.timedelta(hours=1),
         measurement=15,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None
     )
 
     # to specifically catch the error "FrozenInstanceError" which happens we try to modify an immutable object

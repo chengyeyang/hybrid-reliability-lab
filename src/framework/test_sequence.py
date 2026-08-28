@@ -12,7 +12,12 @@ class TestSequence:
     def execute(self):
         test_results = []
         for case in self.test_cases:
-            result = case.run()
+            try:
+                result = case.run()
+            except ExecutionError as error:
+                test_results.append(error.result)
+                break
+
             test_results.append(result)
 
         return test_results

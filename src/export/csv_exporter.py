@@ -11,6 +11,7 @@ class CSVExporter:
         "measurement",
         "outcome",
         "error",
+        "cleanup_error"
     ]
 
     def export(self, records, file_path):
@@ -39,5 +40,6 @@ class CSVExporter:
                     record.duration.total_seconds(),
                     record.measurement,
                     record.outcome,
-                    record.error
+                    record.error,
+                    record.cleanup_error
                 ])

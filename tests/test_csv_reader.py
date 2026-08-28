@@ -13,6 +13,7 @@ def test_csv_reader_restores_exported_record(tmp_path):
         measurement=1,
         outcome="FAIL",
         error="Timeout...",
+        cleanup_error=None
     )
 
     file_path = tmp_path / "test_result.csv"
@@ -35,6 +36,7 @@ def test_csv_reader_restores_none_measurement(tmp_path):
         measurement=None,
         outcome="FAIL",
         error="Timeout...",
+        cleanup_error=None
     )
 
     file_path = tmp_path / "test_result.csv"
@@ -57,6 +59,7 @@ def test_csv_reader_preserves_zero_measurement(tmp_path):
         measurement=0,
         outcome="FAIL",
         error="Timeout...",
+        cleanup_error=None
     )
 
     file_path = tmp_path / "test_result.csv"
@@ -79,6 +82,7 @@ def test_csv_reader_restores_multiple_records(tmp_path):
         measurement=0,
         outcome="PASS",
         error=None,
+        cleanup_error=None
     )
 
     test_record2 = OneTestRecord(
@@ -89,6 +93,7 @@ def test_csv_reader_restores_multiple_records(tmp_path):
         measurement=0,
         outcome="FAIL",
         error="Timeout...",
+        cleanup_error=None
     )
 
     test_record3 = OneTestRecord(
@@ -99,6 +104,7 @@ def test_csv_reader_restores_multiple_records(tmp_path):
         measurement=0,
         outcome="ERROR",
         error="Unexpected error...",
+        cleanup_error=None
     )
 
     file_path = tmp_path / "test_result.csv"

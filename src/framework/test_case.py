@@ -52,6 +52,7 @@ class TestCase1:
 
                 cleanup_error = e
                 cleanup_error_time = datetime.datetime.now()
+                result.cleanup_error = str(e)
 
         result.end_time = datetime.datetime.now()
         result.duration = result.end_time - result.start_time

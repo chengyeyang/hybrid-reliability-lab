@@ -29,7 +29,8 @@ records = [
         duration=datetime.timedelta(hours=1),
         measurement=1.0,
         outcome="PASS",
-        error=None
+        error=None,
+        cleanup_error=None
     ),
     OneTestRecord(
         test_name="name2",
@@ -38,7 +39,8 @@ records = [
         duration=datetime.timedelta(hours=1),
         measurement=1.0,
         outcome="FAIL",
-        error="Timeout"
+        error="Timeout",
+        cleanup_error=None
     ),
     OneTestRecord(
         test_name="name3",
@@ -47,6 +49,7 @@ records = [
         duration=datetime.timedelta(hours=1),
         measurement=3.0,
         outcome="ERROR",
-        error="Unexpected error"
+        error="Unexpected error",
+        cleanup_error=None
     ),
 ]
