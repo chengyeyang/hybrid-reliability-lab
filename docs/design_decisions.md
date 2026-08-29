@@ -346,7 +346,7 @@ capabilities needed by the current MVP.
 
 ---
 
-## 2028-08-27
+## 2026-08-27
 
 ### Decision 34: Keep Top-Level Orchestration in the Existing Application Entry Point
 
@@ -382,20 +382,22 @@ Persisted CSV data is deserialized through `CSVReader` back into `TestRecord` ob
 dashboard components. This preserves `TestRecord` as the common data-layer representation instead of allowing downstream
 components to depend directly on raw CSV rows or string-based serialized values.
 
-The reader restores identifiers, timestamps, durations, numeric measurements, outcomes, and optional error information
-to their expected data types. Empty serialized measurement and error values are restored as `None`, while valid zero
-measurements remain available numeric values.
+The reader restores identifiers, timestamps, durations, numeric measurements, outcomes, primary error information, and
+cleanup error information to their expected data types. Empty serialized measurement, error, and cleanup-error values are
+restored as `None`, while valid zero measurements remain available numeric values.
 
-### Decision 37: Stop the Test Sequence After an Individual Test Execution Error While Preserving Completed Results
+### Decision 37: Stop the Test Sequence After an Individual Execution or Cleanup Failure While Preserving Completed Results
 
 Reason:
 
-An execution error during an individual test can leave the device state uncertain, so the remaining test cases are not
-executed after `TestCase` raises `ExecutionError`. `TestSequence` catches the framework-level execution error, preserves
-the completed `Result` carried by the exception, and stops further sequence execution.
+An execution or cleanup failure during an individual test can leave the device state uncertain, so the remaining test
+cases are not executed after `TestCase` raises `ExecutionError`. `TestSequence` catches the framework-level execution
+error, preserves the completed `Result` carried by the exception, and stops further sequence execution.
 
-Results completed before the error and the failed test's `ERROR` result remain available to the caller. This preserves
-useful execution evidence without continuing tests against a device whose state can no longer be assumed reliable.
+Results completed before the failure and the failed test's completed result remain available to the caller. The preserved
+result may contain an `ERROR` outcome for an execution failure or retain an already determined `PASS` or `FAIL` outcome
+when only cleanup fails. This preserves useful execution evidence without continuing tests against a device whose state
+can no longer be assumed reliable.
 
 ### Decision 38: Keep Startup Failures Separate from Completed Test Results
 

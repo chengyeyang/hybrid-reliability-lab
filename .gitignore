@@ -1,9 +1,13 @@
 # Virtual Environment
 .venv/
+venv/
 
 # Python
 __pycache__/
 *.pyc
+
+# Pytest
+.pytest_cache/
 
 # PyCharm
 .idea/
@@ -19,3 +23,6 @@ Thumbs.db
 
 # Environment variables
 .env
+
+# Generated test output
+output/

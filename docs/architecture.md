@@ -34,14 +34,14 @@ The system simulates an automated testing laboratory capable of:
 **TestRunner**: Manages the overall test execution lifecycle.
 1. Connects to device before test execution
 2. Starts test sequence
-3. Ensures the device is disconnect after execution
+3. Ensures the device is disconnected after execution
 4. Returns the collected execution results to the caller
 
 **TestSequence**: Defines and executes the test sequence
 1. Runs the individual tests in order
 2. Collects and returns test results for the current execution
 3. Catches `ExecutionError` raised by an individual test case and preserves the associated completed `Result`
-4. Stops the remaining sequence after an execution error because the device state can no longer be assumed reliable
+4. Stops the remaining sequence after an execution or cleanup failure because the device state can no longer be assumed reliable
 5. Returns all completed results collected before and including the failed test
 
 **TestCase**: Defines and executes the logic of an individual test
@@ -57,7 +57,8 @@ The system simulates an automated testing laboratory capable of:
 1. Defines the minimum set of operations required by the test framework
 2. Enforces that concrete device implementations provide the required methods
 
-**RealDevice**: Implements the Device contract using the real hardware components
+**RealDevice**: Provides the concrete device integration boundary for composing communication, hardware-control, and
+sensor components behind the common `Device` contract
 1. Receives Communication, Hardware, and Sensor dependencies during initialization
 2. Implements the operations defined by the Device abstraction
 3. Delegates device operations to the appropriate underlying component
@@ -151,7 +152,7 @@ The system simulates an automated testing laboratory capable of:
 4. Transfers failure context from `TestCase` to `TestSequence`
 5. Allows `TestSequence` to preserve the associated completed result and stop the remaining sequence without discarding collected execution evidence
 
-**DeviceError**: Raises DeviceError for invalid device operations and simulated device failures
+**DeviceError**: Represents device-level operation failures
 1. Belongs to the Device abstraction layer
 2. Can be raised by concrete device implementations when an operation is invalid or cannot be completed
 3. Keeps device-level failures independent from framework-level `ExecutionError`
@@ -241,9 +242,9 @@ result logging outside the test execution framework. The Logger converts each co
 TestRecord with its own record identity, providing a data-layer representation for downstream data processing.
 
 When an individual `TestCase` raises `ExecutionError`, `TestSequence` preserves the completed `Result` carried by the
-exception and stops the remaining test cases. Results completed before the failure and the failed test's `ERROR` result
-remain available to the caller as execution evidence. The execution error is therefore converted into sequence-level
-fail-fast behavior rather than causing already collected results to be discarded.
+exception and stops the remaining test cases. Results completed before the failure and the failed test's completed result
+remain available to the caller as execution evidence. The preserved result may contain an `ERROR` outcome for an
+execution failure or retain an already determined `PASS` or `FAIL` outcome when only cleanup fails.
 
 Startup failures that occur before individual test execution, such as device connection failure, remain execution-level
 failures and do not produce `Result` or `TestRecord` data because no test case has completed. These failures continue to

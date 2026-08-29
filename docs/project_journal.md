@@ -551,3 +551,43 @@
 - [x] Verify existing PASS and FAIL behavior remains unchanged
 - [x] Run full regression tests — 83 tests passed
 
+# Day 20
+
+## Summary
+> Improve engineering documentation and repository quality for external review. Expand the README to explain the project
+> purpose, key capabilities, architecture, execution flow, data pipeline, reliability behavior, device abstraction,
+> installation, usage, example output, project structure, and major engineering decisions. Align architecture and design
+> documentation with the latest reliability semantics, clarify the RealDevice integration boundary, and add a formal
+> testing strategy covering unit, integration, end-to-end, reliability, and data-integrity testing. Remove unused scaffold
+> code and tracked runtime artifacts, update ignore rules for generated output and local environments, and validate the
+> documented setup through a clean Python 3.11 environment. Complete regression testing with 83 passing automated tests,
+> verify the end-to-end application workflow, and confirm the Streamlit dashboard starts successfully from persisted CSV
+> test history.
+
+## Steps
+- [x] Review the repository from an external-reviewer perspective
+- [x] Expand README project overview and key features
+- [x] Add architecture and execution-flow documentation to README
+- [x] Document the Result-to-TestRecord data pipeline and CSV persistence boundary
+- [x] Document reliability and failure-handling semantics
+- [x] Explain Device abstraction and VirtualDevice responsibilities
+- [x] Add installation and dependency setup instructions
+- [x] Document how to run the application, automated tests, and Streamlit dashboard
+- [x] Add example test output based on actual generated CSV data
+- [x] Add README engineering-decision summaries and documentation links
+- [x] Document the current project structure
+- [x] Clarify RealDevice as an integration boundary rather than completed physical-hardware I/O
+- [x] Update architecture documentation for execution and cleanup failure semantics
+- [x] Update design decisions for cleanup-error persistence and sequence-stop behavior
+- [x] Add a testing strategy for unit, integration, end-to-end, reliability, and data-integrity coverage
+- [x] Verify dependencies in a clean Python 3.11 virtual environment
+- [x] Keep the explicit Streamlit-compatible PyArrow dependency after clean-environment verification
+- [x] Prefer `python -m pytest` to ensure pytest uses the active Python environment
+- [x] Remove unused `analysis` and `utils/config.py` scaffolding
+- [x] Remove tracked generated CSV backup data
+- [x] Ignore generated `output/`, Python caches, pytest cache, IDE files, and local virtual environments
+- [x] Check documentation for stale dates and formatting issues
+- [x] Run the complete automated test suite successfully with 83 passing tests
+- [x] Verify `python main.py` completes successfully
+- [x] Verify the Streamlit dashboard starts successfully from persisted test data
+
