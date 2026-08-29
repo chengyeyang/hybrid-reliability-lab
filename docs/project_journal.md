@@ -503,3 +503,51 @@
 - [x] Add end-to-end FAIL integration coverage
 - [x] Keep dashboard sample data available only for deterministic dashboard tests
 - [x] Run full regression tests — 75 tests passed
+
+---
+
+# Day 19
+
+## Summary
+> Extend the hardware test framework with deterministic reliability failure simulation and complete the previously
+> incomplete ERROR-result data path. Define failure semantics that distinguish startup failures from completed test
+> execution errors, stop the remaining test sequence when an individual test encounters an execution-level failure, and
+> preserve all completed results including the failed test's ERROR result. Add separate cleanup-error information so
+> cleanup failures do not overwrite an already determined PASS or FAIL outcome or replace a primary execution error.
+> Extend Result, TestRecord, Logger, CSV export, and CSV restoration to preserve cleanup failure information across the
+> data pipeline. Add deterministic movement, read, and stop failure controls to VirtualDevice while keeping simulation
+> controls outside the Device contract. Add focused tests for operation failure, cleanup failure, combined primary and
+> secondary failures, sequence fail-fast behavior, and an end-to-end ERROR flow through execution, logging, persistence,
+> restoration, and reporting. Verify existing PASS and FAIL behavior through full regression testing with 83 passing
+> tests.
+
+## Steps
+- [x] Review the existing failure and ExecutionError flow
+- [x] Distinguish configuration, startup, test execution, and cleanup failures
+- [x] Define startup failures as execution-level failures that do not produce TestRecord data
+- [x] Define individual test execution errors as completed ERROR results
+- [x] Stop the remaining sequence after an individual test execution error
+- [x] Preserve completed PASS and FAIL results before an execution error
+- [x] Preserve the failed test's ERROR result when stopping the sequence
+- [x] Update TestSequence to consume ExecutionError and return completed execution evidence
+- [x] Preserve existing PASS or FAIL outcomes when cleanup fails
+- [x] Preserve primary execution errors separately from secondary cleanup errors
+- [x] Add cleanup_error to Result and TestRecord
+- [x] Propagate cleanup-error data through Logger
+- [x] Extend CSV persistence with cleanup-error data
+- [x] Restore persisted cleanup-error data through CSVReader
+- [x] Add deterministic movement failure simulation to VirtualDevice
+- [x] Add deterministic read failure simulation to VirtualDevice
+- [x] Add deterministic stop failure simulation to VirtualDevice
+- [x] Keep reliability simulation controls outside the Device contract
+- [x] Verify failed simulated operations do not incorrectly apply successful state transitions
+- [x] Add focused VirtualDevice failure-simulation tests
+- [x] Add TestCase execution-error handling coverage
+- [x] Verify PASS outcome preservation when cleanup fails
+- [x] Verify primary and cleanup errors are both preserved when both stages fail
+- [x] Add TestSequence fail-fast and result-preservation coverage
+- [x] Add end-to-end ERROR integration coverage
+- [x] Verify ERROR data through Logger, CSV export, CSV restoration, and ReportGenerator
+- [x] Verify existing PASS and FAIL behavior remains unchanged
+- [x] Run full regression tests — 83 tests passed
+

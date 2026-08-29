@@ -37,17 +37,21 @@ The system simulates an automated testing laboratory capable of:
 3. Ensures the device is disconnect after execution
 4. Returns the collected execution results to the caller
 
-**TestSequence**: Defines and executes the test sequence  
+**TestSequence**: Defines and executes the test sequence
 1. Runs the individual tests in order
 2. Collects and returns test results for the current execution
-3. Stops the remaining sequence when an execution-level failure propagates from a test case
+3. Catches `ExecutionError` raised by an individual test case and preserves the associated completed `Result`
+4. Stops the remaining sequence after an execution error because the device state can no longer be assumed reliable
+5. Returns all completed results collected before and including the failed test
 
 **TestCase**: Defines and executes the logic of an individual test
 1. Defines and performs the steps of an individual test
 2. Collects measurements and determines the test outcome (`PASS`, `FAIL`, or `ERROR`)
-3. Stores the test outcome and execution information in a `Result` 
+3. Stores the test outcome and execution information in a `Result`
 4. Performs case-level cleanup after test execution
-5. Raises `ExecutionError` when an execution-level failure requires the test sequence to stop
+5. Preserves primary execution errors separately from cleanup errors
+6. Preserves an already determined `PASS` or `FAIL` outcome when only cleanup fails
+7. Raises `ExecutionError` when an execution or cleanup failure requires the remaining test sequence to stop
 
 **Device**: Defines the abstract contract that all device implementations must follow
 1. Defines the minimum set of operations required by the test framework
@@ -61,17 +65,20 @@ The system simulates an automated testing laboratory capable of:
 **VirtualDevice**: Implements the Device contract using simulated device state and behavior
 1. Maintains simulated connection, movement, and measurement state
 2. Implements the same operations defined by the Device abstraction
-3. Provides VirtualDevice-specific controls for configuring deterministic measurement and failure scenarios 
+3. Provides VirtualDevice-specific controls for deterministic measurement, connection, movement, read, and stop failure scenarios
 4. Keeps simulation-specific controls outside the Device contract
 5. Raises `DeviceError` for invalid device operations and simulated device failures
+6. Preserves simulated device state when a configured operation fails before completing its state transition
 
 **Result**: Stores the outcome and execution information of an individual test
 1. Stores the test outcome (`PASS`, `FAIL`, or `ERROR`)
-2. Stores measurement, timing information, and name of the test 
-3. Preserves test-level error information when test execution fails
+2. Stores measurement, timing information, and name of the test
+3. Preserves the primary test execution error when test execution fails
+4. Preserves cleanup error information separately from the primary execution error
+5. Allows cleanup failure information to coexist with an already determined `PASS` or `FAIL` outcome
 
 **TestRecord**: Represents the completed data of an individual test execution
-1. Stores test name, measurement, timing, outcome, and error information
+1. Stores test name, measurement, timing, outcome, primary error, and cleanup error information
 2. Assigns a unique identifier to each recorded test execution
 3. Preserves completed test data as an immutable record
 4. Provides a data-layer representation independent from the execution-layer `Result`
@@ -93,8 +100,8 @@ The system simulates an automated testing laboratory capable of:
 **CSVReader**: Restores persisted test record data from CSV format
 1. Reads persisted test record data from an existing CSV file
 2. Deserializes CSV field values back into the data types required by `TestRecord`
-3. Restores timestamps, durations, record identifiers, measurements, outcomes, and error information
-4. Preserves unavailable measurement and error values as `None`
+3. Restores timestamps, durations, record identifiers, measurements, outcomes, primary errors, and cleanup errors
+4. Preserves unavailable measurement, error, and cleanup-error values as `None`
 5. Preserves valid zero measurement values separately from unavailable measurements
 6. Returns completed `TestRecord` objects for downstream reporting and presentation
 
@@ -137,11 +144,12 @@ The system simulates an automated testing laboratory capable of:
 9. Performs no report calculation itself and does not modify source report or record data
 10. Remains independent from test execution and logging responsibilities
 
-**ExecutionError**: Represents an execution-level failure that must be propagated through the framework 
-1. Preserves the original exception together with test context. 
-2. Carries the associated result, failure stage, and timestamp. 
-3. Preserves a secondary cleanup error when both execution and cleanup fail. 
-4. Propagates the failure upward so the remaining test sequence can be stopped.
+**ExecutionError**: Represents a test-case execution or cleanup failure that requires sequence-level handling
+1. Preserves the original exception together with test context
+2. Carries the associated `Result`, failure stage, and timestamp
+3. Preserves a secondary cleanup error when both test execution and cleanup fail
+4. Transfers failure context from `TestCase` to `TestSequence`
+5. Allows `TestSequence` to preserve the associated completed result and stop the remaining sequence without discarding collected execution evidence
 
 **DeviceError**: Raises DeviceError for invalid device operations and simulated device failures
 1. Belongs to the Device abstraction layer
@@ -232,6 +240,15 @@ stored as persistent state in TestSequence. The caller can pass completed Result
 result logging outside the test execution framework. The Logger converts each completed Result into an immutable
 TestRecord with its own record identity, providing a data-layer representation for downstream data processing.
 
+When an individual `TestCase` raises `ExecutionError`, `TestSequence` preserves the completed `Result` carried by the
+exception and stops the remaining test cases. Results completed before the failure and the failed test's `ERROR` result
+remain available to the caller as execution evidence. The execution error is therefore converted into sequence-level
+fail-fast behavior rather than causing already collected results to be discarded.
+
+Startup failures that occur before individual test execution, such as device connection failure, remain execution-level
+failures and do not produce `Result` or `TestRecord` data because no test case has completed. These failures continue to
+propagate to the application caller.
+
 Completed TestRecord data can be consumed independently by downstream components. CSVExporter persists TestRecord data
 into CSV format while preserving existing test history, record order, and a stable serialization format. ReportGenerator
 aggregates completed TestRecord data into a TestReport containing outcome counts, pass rate, measurement statistics, and
@@ -265,10 +282,23 @@ the dashboard to provide lightweight interactive inspection of persisted test re
 ## Error Handling Flow
 ```mermaid
 flowchart TD
-    TC[TestCase]
-    TS[TestSequence]
+    DEV[Device]
     TR[TestRunner]
+    TC[TestCase]
+    RES[Result]
+    EE[ExecutionError]
+    TS[TestSequence]
+    CALLER[Application Caller]
 
-    TC -. execution / cleanup failure .-> TS
-    TS -. stops sequence and propagates failure .-> TR
+    DEV -. startup / connection failure .-> TR
+    TR -. propagates startup failure .-> CALLER
+
+    DEV -. operation failure .-> TC
+    TC --> RES
+    TC -. execution / cleanup failure .-> EE
+    EE --> TS
+    TS -->|preserve associated Result| RES
+    TS -->|stop remaining cases| TS
+    TS -->|return completed Results| TR
+    TR --> CALLER
 ```

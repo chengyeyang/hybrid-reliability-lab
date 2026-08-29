@@ -385,3 +385,48 @@ components to depend directly on raw CSV rows or string-based serialized values.
 The reader restores identifiers, timestamps, durations, numeric measurements, outcomes, and optional error information
 to their expected data types. Empty serialized measurement and error values are restored as `None`, while valid zero
 measurements remain available numeric values.
+
+### Decision 37: Stop the Test Sequence After an Individual Test Execution Error While Preserving Completed Results
+
+Reason:
+
+An execution error during an individual test can leave the device state uncertain, so the remaining test cases are not
+executed after `TestCase` raises `ExecutionError`. `TestSequence` catches the framework-level execution error, preserves
+the completed `Result` carried by the exception, and stops further sequence execution.
+
+Results completed before the error and the failed test's `ERROR` result remain available to the caller. This preserves
+useful execution evidence without continuing tests against a device whose state can no longer be assumed reliable.
+
+### Decision 38: Keep Startup Failures Separate from Completed Test Results
+
+Reason:
+
+Failures that occur before an individual test begins, such as device connection failure, are treated as execution startup
+failures rather than test outcomes. Because no `TestCase` has completed, these failures do not create a `Result` or
+`TestRecord` and continue to propagate to the application caller.
+
+This keeps `TestRecord` focused on completed individual test execution evidence instead of using test records to represent
+every framework or application-level failure.
+
+### Decision 39: Preserve Cleanup Errors Separately from Test Outcome and Primary Execution Errors
+
+Reason:
+
+A cleanup failure does not necessarily invalidate an already determined test outcome. When test execution and evaluation
+complete successfully, an existing `PASS` or `FAIL` outcome is preserved even if cleanup later fails.
+
+Cleanup failure information is stored separately in `cleanup_error` rather than overloading the primary `error` field.
+When both execution and cleanup fail, the execution failure remains the primary error and the cleanup failure is preserved
+as secondary failure information. This avoids ambiguous records and retains both the test result and relevant lifecycle
+failure evidence.
+
+### Decision 40: Keep Reliability Failure Controls Specific to VirtualDevice
+
+Reason:
+
+Deterministic connection, movement, read, and stop failure controls are implemented as `VirtualDevice`-specific simulation
+features rather than being added to the `Device` contract. These controls exist to reproduce reliability scenarios during
+testing and are not operations required from production device implementations.
+
+Keeping failure configuration outside the shared device abstraction preserves the existing framework-to-device contract
+while allowing automated tests to reproduce failure behavior consistently.
