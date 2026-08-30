@@ -34,7 +34,7 @@ flowchart TD
 
     subgraph Data["Data & Persistence"]
         Result["Result"]
-        TestRecord["TestRecord"]
+        TestRecord["OneTestRecord"]
         CSV["CSV Storage"]
 
         Result -->|converted after execution| TestRecord
@@ -42,7 +42,7 @@ flowchart TD
     end
 
     subgraph Analysis["Analysis & Presentation"]
-        TestReport["TestReport"]
+        TestReport["OneTestReport"]
         Visualization["Visualization"]
         Dashboard["Dashboard"]
 
